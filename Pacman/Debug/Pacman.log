@@ -1,0 +1,18 @@
+﻿Build started 08/12/2014 23:17:07.
+     1>Project "C:\Users\Thomas\Desktop\Pacman\Pacman\Pacman.vcxproj" on node 2 (LibLinkOnly target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE /PGD:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd" /LTCG:PGOptimize /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj
+         Debug\main.obj
+         Debug\Pacman.obj
+         Microsoft (R) Incremental Linker Version 12.00.30723.0
+         Copyright (C) Microsoft Corporation.  All rights reserved.
+         
+         "/OUT:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST "/MANIFESTUAC:level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG "/PDB:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE "/PGD:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd" /LTCG:PGOptimize /TLBID:1 /DYNAMICBASE /NXCOMPAT "/IMPLIB:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj 
+         Debug\main.obj 
+         Debug\Pacman.obj 
+     1>LINK : fatal error LNK1266: error reading instrumentation file 'C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd'; File not found
+     1>Done Building Project "C:\Users\Thomas\Desktop\Pacman\Pacman\Pacman.vcxproj" (LibLinkOnly target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.72
