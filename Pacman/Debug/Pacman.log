@@ -1,18 +1,35 @@
-﻿Build started 08/12/2014 23:17:07.
-     1>Project "C:\Users\Thomas\Desktop\Pacman\Pacman\Pacman.vcxproj" on node 2 (LibLinkOnly target(s)).
-     1>Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE /PGD:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd" /LTCG:PGOptimize /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj
+﻿Build started 10/12/2014 18:52:27.
+     1>Project "C:\Users\Thomas\Source\Repos\pacman\Pacman\Pacman.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Circle.cpp main.cpp Pacman.cpp
+         Pacman.cpp
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(8): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(9): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(119): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(288): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(289): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(326): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(329): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(332): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(335): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(343): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(349): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(368): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(370): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(385): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(415): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(442): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(610): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+         main.cpp
+         Circle.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj
          Debug\main.obj
          Debug\Pacman.obj
-         Microsoft (R) Incremental Linker Version 12.00.30723.0
-         Copyright (C) Microsoft Corporation.  All rights reserved.
-         
-         "/OUT:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST "/MANIFESTUAC:level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG "/PDB:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE "/PGD:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd" /LTCG:PGOptimize /TLBID:1 /DYNAMICBASE /NXCOMPAT "/IMPLIB:C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj 
-         Debug\main.obj 
-         Debug\Pacman.obj 
-     1>LINK : fatal error LNK1266: error reading instrumentation file 'C:\Users\Thomas\Desktop\Pacman\Debug\Pacman.pgd'; File not found
-     1>Done Building Project "C:\Users\Thomas\Desktop\Pacman\Pacman\Pacman.vcxproj" (LibLinkOnly target(s)) -- FAILED.
+         Pacman.vcxproj -> C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.exe
+     1>Done Building Project "C:\Users\Thomas\Source\Repos\pacman\Pacman\Pacman.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:00.72
+Time Elapsed 00:00:05.48
