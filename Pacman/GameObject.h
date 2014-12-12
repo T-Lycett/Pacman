@@ -6,7 +6,7 @@ using namespace S2D;
 
 class GameObject
 {
-private:
+protected:
 	Texture2D* texture;
 	Rect* sourceRect;
 	Rect* posRect;
@@ -18,7 +18,7 @@ public:
 	virtual void Update(int elapsedTime);
 	virtual void Draw();
 
-	virtual void SetPosition(Vector2& pos);
-	virtual Vector2 GetPosition();
+	virtual void SetPosition(float x, float y);
+	virtual const Rect& GetPosition();
 };
 

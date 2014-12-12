@@ -14,22 +14,11 @@
 // Just need to include main header file
 #include "S2D/S2D.h"
 #include "Circle.h"
+#include "Player.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
 
-struct Player 
-{
-	Rect* posRect;
-	Rect* sourceRect;
-	Texture2D* texture;
-	int direction;
-	int frame;
-	int currentFrameTime;
-	float speedMultiplier;
-	Circle* boundingCircle;
-	bool dead;
-};
 
 struct Enemy
 {
@@ -87,12 +76,7 @@ private:
 	Menu* _startMenu;
 	Menu* _pauseMenu;
 	Menu* _gameOverMenu;
-
-	// Position for String
-	Vector2* _stringPosition;
-
-	const float _cPacmanSpeed;
-	const int _cPacmanFrameTime;
+	
 	const int _cMunchieFrameTime;
 
 	const int _cEnemyMinDirectionTime;

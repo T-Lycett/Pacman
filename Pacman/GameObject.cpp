@@ -3,11 +3,17 @@
 
 GameObject::GameObject()
 {
+	texture = nullptr;
+	sourceRect = nullptr;
+	posRect = nullptr;
 }
 
 
 GameObject::~GameObject()
 {
+	delete texture;
+	delete sourceRect;
+	delete posRect;
 }
 
 void GameObject::Load()
@@ -22,25 +28,22 @@ void GameObject::Update(int elapsedTime)
 
 void GameObject::Draw()
 {
-	if (texture != nullptr && sourceRect != nullptr && posRect != nullptr)
+	if (texture != nullptr && sourceRect != nullptr)
 	{
 		SpriteBatch::Draw(texture, sourceRect, posRect);
 	}
 }
 
-void GameObject::SetPosition(Vector2& pos)
+void GameObject::SetPosition(float x, float y)
 {
 	if (posRect != nullptr)
 	{
-		posRect->X = pos.X;
-		posRect->Y = pos.Y;
+		posRect->X = x;
+		posRect->Y = y;
 	}
 }
 
-Vector2 GameObject::GetPosition()
+const Rect& GameObject::GetPosition()
 {
-	Vector2 pos;
-	pos.X = posRect->X;
-	pos.Y = posRect->Y;
-	return pos;
+	return *posRect;
 }

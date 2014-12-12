@@ -31,7 +31,7 @@ void Circle::Radius(const float radius)
 	_radius = radius;
 }
 
-bool Circle::Intersects(const Rect& rectangle)
+bool Circle::Intersects(const Rect& rectangle) const
 {
 	Vector2 v(MathHelper::Clamp(_center.X, rectangle.X, rectangle.X + rectangle.Width), MathHelper::Clamp(_center.Y, rectangle.Y, rectangle.Y + rectangle.Height));
 

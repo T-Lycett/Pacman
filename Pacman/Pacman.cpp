@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250), _cMunchieFrameTime(500), _cMunchieMoveTrigger(100), _cMunchieSpeed(0.1), _cPauseKey(Input::Keys::P), _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _cMunchieMutiplier(1.5f)
+Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cMunchieFrameTime(500), _cMunchieMoveTrigger(100), _cMunchieSpeed(0.1), _cPauseKey(Input::Keys::P), _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _cMunchieMutiplier(1.5f)
 {
 	srand(time(nullptr));
 
@@ -23,11 +23,6 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 	_start = false;
 	_spaceKeyDown = false;
 	_rKeyDown = false;
-
-	_pacman->currentFrameTime = 0;
-	_pacman->frame = 0;
-	_pacman->speedMultiplier = 1.0f;
-	_pacman->dead = false;
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
@@ -51,10 +46,6 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 Pacman::~Pacman()
 {
-	delete _pacman->posRect;
-	delete _pacman->texture;
-	delete _pacman->sourceRect;
-	delete _pacman->boundingCircle;
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
@@ -72,8 +63,6 @@ Pacman::~Pacman()
 		delete _ghosts[iii]->posRect;
 		delete _ghosts[iii];
 	}
-
-	delete _stringPosition;
 
 	delete _startMenu->background;
 	delete _startMenu->rectangle;
@@ -96,11 +85,7 @@ Pacman::~Pacman()
 void Pacman::LoadContent()
 {
 	// Load Pacman
-	_pacman->texture = new Texture2D();
-	_pacman->texture->Load("Textures/Pacman.tga", false);
-	_pacman->posRect = new Rect(350.0f, 350.0f, 32, 32);
-	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_pacman->boundingCircle = new Circle(_pacman->posRect->Center(), 16.0f);
+	_pacman->Load();
 
 	// Load Munchies
 	_munchieTexture = new Texture2D();
@@ -119,9 +104,6 @@ void Pacman::LoadContent()
 		_ghosts[iii]->posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
 		_ghosts[iii]->sourceRect = new Rect(0.0f, 0.0f, 20, 20);
 	}
-
-	// Set string position
-	_stringPosition = new Vector2(10.0f, 25.0f);
 
 	// Set Menu Paramters
 	Texture2D* menuTex = new Texture2D();
@@ -156,7 +138,7 @@ void Pacman::Update(int elapsedTime)
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 	Input::MouseState* mouseState = Input::Mouse::GetState();
 
-	if (!_pacman->dead)
+	if (!_pacman->IsDead())
 	{
 		CheckStart(*keyboardState);
 
@@ -165,11 +147,11 @@ void Pacman::Update(int elapsedTime)
 	
 	if (!_paused && _start)
 	{
-		if (!_pacman->dead)
-		{
-			Input(elapsedTime, *keyboardState, *mouseState);
+		Input(elapsedTime, *keyboardState, *mouseState);
 
-			UpdatePacman(elapsedTime);
+		if (!_pacman->IsDead())
+		{
+			_pacman->Update(elapsedTime);
 		}
 
 		UpdateMunchies(elapsedTime);
@@ -187,9 +169,6 @@ void Pacman::Update(int elapsedTime)
 
 void Pacman::Draw(int elapsedTime)
 {
-	// Allows us to easily create a string
-	std::stringstream stream;
-	stream << "Pacman X: " << _pacman->posRect->X << " Y: " << _pacman->posRect->Y << endl;
 	//stream << "Munchie X: " << _munchie->position->X << " Y: " << _munchie->position->Y;
 
 	SpriteBatch::BeginDraw(); // Starts Drawing
@@ -206,9 +185,6 @@ void Pacman::Draw(int elapsedTime)
 	{
 		SpriteBatch::Draw(_ghosts[iii]->texture, _ghosts[iii]->posRect, _ghosts[iii]->sourceRect);
 	}
-	
-	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 
 	if (_paused)
 	{
@@ -228,11 +204,9 @@ void Pacman::Draw(int elapsedTime)
 			Color::Red);
 	}
 	
-	if (!_pacman->dead)
-	{
-		SpriteBatch::Draw(_pacman->texture, _pacman->posRect, _pacman->sourceRect); // Draws Pacman
-	}
-	else
+	_pacman->Draw();
+
+	if (_pacman->IsDead())
 	{
 		std::stringstream menuStream;
 		menuStream << "GAME OVER!";
@@ -245,41 +219,12 @@ void Pacman::Draw(int elapsedTime)
 
 void Pacman::Input(int elapsedTime, Input::KeyboardState & state, const Input::MouseState & mouseState)
 {
-	float pacmanSpeed = _cPacmanSpeed * elapsedTime * _pacman->speedMultiplier;
-	// Checks if D key is pressed
-	if (state.IsKeyDown(Input::Keys::RIGHT))
-	{
-		_pacman->posRect->X += pacmanSpeed; //Moves Pacman across X axis
-		_pacman->direction = 0;
-	}
-	else if (state.IsKeyDown(Input::Keys::LEFT))
-	{
-		_pacman->posRect->X -= pacmanSpeed; //Moves Pacman across X axis
-		_pacman->direction = 2;
-	}
-	else if (state.IsKeyDown(Input::Keys::DOWN))
-	{
-		_pacman->posRect->Y += pacmanSpeed; //Moves Pacman across Y axis
-		_pacman->direction = 1;
-	}
-	else if (state.IsKeyDown(Input::Keys::UP))
-	{
-		_pacman->posRect->Y -= pacmanSpeed; //Moves Pacman across Y axis
-		_pacman->direction = 3;
-	}
 
 	/*if (mouseState.LeftButton == Input::ButtonState::PRESSED)
 	{
 		_munchie->position->Y = mouseState->Y - (_munchie->rect->Height / 2);
 		_munchie->position->X = mouseState->X - (_munchie->rect->Width / 2);
 	}*/
-
-	if (state.IsKeyDown(Input::Keys::LEFTSHIFT))
-	{
-		_pacman->speedMultiplier = 2.0f;
-	} else {
-		_pacman->speedMultiplier = 1.0f;
-	}
 
 	if (state.IsKeyDown(Input::Keys::R) && !_rKeyDown)
 	{
@@ -322,18 +267,6 @@ void Pacman::CheckStart(Input::KeyboardState & state)
 
 void Pacman::CheckViewportCollision()
 {
-	if (_pacman->posRect->X > Graphics::GetViewportWidth())
-		_pacman->posRect->X = -_pacman->sourceRect->Width;
-
-	if (_pacman->posRect->X < -_pacman->sourceRect->Width)
-		_pacman->posRect->X = Graphics::GetViewportWidth();
-
-	if (_pacman->posRect->Y > Graphics::GetViewportHeight())
-		_pacman->posRect->Y = -_pacman->sourceRect->Height;
-
-	if (_pacman->posRect->Y < -_pacman->sourceRect->Height)
-		_pacman->posRect->Y = Graphics::GetViewportHeight();
-
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
 		if (_munchies[iii].posRect->X > Graphics::GetViewportWidth() - _munchies[iii].rect->X)
@@ -349,27 +282,6 @@ void Pacman::CheckViewportCollision()
 			_munchies[iii].posRect->Y = Graphics::GetViewportHeight() - _munchies[iii].rect->Height;
 	}
 
-}
-
-void Pacman::UpdatePacman(int elapsedTime)
-{
-	_pacman->currentFrameTime += elapsedTime;
-
-	if (_pacman->currentFrameTime > _cPacmanFrameTime)
-	{
-		_pacman->frame++;
-
-		if (_pacman->frame >= 2)
-			_pacman->frame = 0;
-
-		_pacman->currentFrameTime = 0;
-	}
-
-	_pacman->sourceRect->X = _pacman->sourceRect->Width * _pacman->frame;
-
-	_pacman->sourceRect->Y = _pacman->sourceRect->Height * _pacman->direction;
-
-	_pacman->boundingCircle->Center(_pacman->posRect->Center());
 }
 
 void Pacman::UpdateMunchies(int elapsedTime)
@@ -422,7 +334,7 @@ void Pacman::CheckMunchieCollisions()
 	{
 		if (!_munchies[iii].eaten)
 		{
-			if (_pacman->boundingCircle->Intersects(*_munchies[iii].posRect))
+			if (_pacman->GetBoundingCircle().Intersects(*_munchies[iii].posRect))
 			{
 				Audio::Play(_pop);
 				_munchies[iii].eaten = true;
@@ -507,7 +419,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 				_ghosts[iii]->direction = rand() % 4;
 			}
 
-			if (Vector2::Distance(_pacman->posRect->Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
+			if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
 			{
 				_ghosts[iii]->previousBehaviour = _ghosts[iii]->behaviour;
 				_ghosts[iii]->behaviour = EnemyBehaviour::CHASE;
@@ -516,15 +428,15 @@ void Pacman::UpdateGhosts(int elapsedTime)
 		}
 		else if (_ghosts[iii]->behaviour == EnemyBehaviour::CHASE)
 		{
-			if (!_pacman->dead)
+			if (!_pacman->IsDead())
 			{
 				_ghosts[iii]->speed = 0.15f;
 				_ghosts[iii]->sourceRect->X = 40.0f;
 				if (_ghosts[iii]->currentDirectionTime > _cEnemyMinDirectionTime)
 				{
-					if (abs(_ghosts[iii]->posRect->X - _pacman->posRect->X) > abs(_ghosts[iii]->posRect->Y - _pacman->posRect->Y))
+					if (abs(_ghosts[iii]->posRect->X - _pacman->GetPosition().X) > abs(_ghosts[iii]->posRect->Y - _pacman->GetPosition().Y))
 					{
-						if (_ghosts[iii]->posRect->X > _pacman->posRect->X)
+						if (_ghosts[iii]->posRect->X > _pacman->GetPosition().X)
 						{
 							_ghosts[iii]->direction = 2;
 						}
@@ -535,7 +447,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 					}
 					else
 					{
-						if (_ghosts[iii]->posRect->Y > _pacman->posRect->Y)
+						if (_ghosts[iii]->posRect->Y > _pacman->GetPosition().Y)
 						{
 							_ghosts[iii]->direction = 3;
 						}
@@ -545,7 +457,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 						}
 					}
 				}
-				if (Vector2::Distance(_pacman->posRect->Center(), _ghosts[iii]->posRect->Center()) > _cEnemyDistanceStopChase)
+				if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) > _cEnemyDistanceStopChase)
 				{
 					_ghosts[iii]->behaviour = _ghosts[iii]->previousBehaviour;
 					_ghosts[iii]->previousBehaviour = EnemyBehaviour::CHASE;
@@ -590,7 +502,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 					_ghosts[iii]->direction = 2;
 				}
 			}
-			if (Vector2::Distance(_pacman->posRect->Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
+			if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
 			{
 				_ghosts[iii]->previousBehaviour = _ghosts[iii]->behaviour;
 				_ghosts[iii]->behaviour = EnemyBehaviour::CHASE;
@@ -615,7 +527,7 @@ void Pacman::CheckGhostCollision()
 {
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		if (_pacman->boundingCircle->Intersects(*_ghosts[iii]->posRect))
-			_pacman->dead = true;
+		if (_pacman->GetBoundingCircle().Intersects(*_ghosts[iii]->posRect))
+			_pacman->Kill();
 	}
 }

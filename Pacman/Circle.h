@@ -18,7 +18,7 @@ public:
 	const float& Radius() const;
 	void Radius(const float radius);
 
-	bool Intersects(const Rect& rectangle);
+	bool Intersects(const Rect& rectangle) const;
 
 private:
 	Vector2 _center;
