@@ -4,25 +4,25 @@
 
 Player::Player() : _cPlayerSpeed(0.1f), _cPlayerFrameTime(250)
 {
-	currentFrameTime = 0;
-	frame = 0;
-	speedMultiplier = 1.0f;
-	dead = false;
+	_currentFrameTime = 0;
+	_frame = 0;
+	_speedMultiplier = 1.0f;
+	_dead = false;
+	_boundingCircle = nullptr;
 }
 
 Player::~Player()
 {
-	delete boundingCircle;
+	delete _boundingCircle;
 	delete _stringPosition;
 }
 
-void Player::Load()
+void Player::Load(Texture2D* texture)
 {
-	texture = new Texture2D();
-	texture->Load("Textures/Pacman.tga", false);
-	posRect = new Rect(350.0f, 350.0f, 32, 32);
-	sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	boundingCircle = new Circle(posRect->Center(), 16.0f);
+	_texture = texture;
+	_posRect = new Rect(350.0f, 350.0f, 32, 32);
+	_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_boundingCircle = new Circle(_posRect->Center(), 16.0f);
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 }
@@ -31,23 +31,23 @@ void Player::Update(int elapsedTime)
 {
 	Input(elapsedTime);
 
-	currentFrameTime += elapsedTime;
+	_currentFrameTime += elapsedTime;
 
-	if (currentFrameTime > _cPlayerFrameTime)
+	if (_currentFrameTime > _cPlayerFrameTime)
 	{
-		frame++;
+		_frame++;
 
-		if (frame >= 2)
-			frame = 0;
+		if (_frame >= 2)
+			_frame = 0;
 
-		currentFrameTime = 0;
+		_currentFrameTime = 0;
 	}
 
-	sourceRect->X = sourceRect->Width * frame;
+	_sourceRect->X = _sourceRect->Width * _frame;
 
-	sourceRect->Y = sourceRect->Height * direction;
+	_sourceRect->Y = _sourceRect->Height * _direction;
 
-	boundingCircle->Center(posRect->Center());
+	_boundingCircle->Center(_posRect->Center());
 
 	CheckCollisions();
 }
@@ -56,79 +56,79 @@ void Player::Draw()
 {
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Pacman X: " << posRect->X << " Y: " << posRect->Y << endl;
+	stream << "Pacman X: " << _posRect->X << " Y: " << _posRect->Y << endl;
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 
-	if (!dead)
+	if (!_dead)
 	{
-		SpriteBatch::Draw(texture, posRect, sourceRect); // Draws Pacman
+		SpriteBatch::Draw(_texture, _posRect, _sourceRect); // Draws Pacman
 	}
 }
 
 void Player::Input(int elapsedTime)
 {
 	Input::KeyboardState* state = Input::Keyboard::GetState();
-	float playerSpeed = _cPlayerSpeed * elapsedTime * speedMultiplier;
+	float playerSpeed = _cPlayerSpeed * elapsedTime * _speedMultiplier;
 
 	// Checks if D key is pressed
 	if (state->IsKeyDown(Input::Keys::RIGHT))
 	{
-		posRect->X += playerSpeed; //Moves player across X axis
-		direction = 0;
+		_posRect->X += playerSpeed; //Moves player across X axis
+		_direction = 0;
 	}
 	else if (state->IsKeyDown(Input::Keys::LEFT))
 	{
-		posRect->X -= playerSpeed; //Moves player across X axis
-		direction = 2;
+		_posRect->X -= playerSpeed; //Moves player across X axis
+		_direction = 2;
 	}
 	else if (state->IsKeyDown(Input::Keys::DOWN))
 	{
-		posRect->Y += playerSpeed; //Moves player across Y axis
-		direction = 1;
+		_posRect->Y += playerSpeed; //Moves player across Y axis
+		_direction = 1;
 	}
 	else if (state->IsKeyDown(Input::Keys::UP))
 	{
-		posRect->Y -= playerSpeed; //Moves player across Y axis
-		direction = 3;
+		_posRect->Y -= playerSpeed; //Moves player across Y axis
+		_direction = 3;
 	}
 
 	if (state->IsKeyDown(Input::Keys::LEFTSHIFT))
 	{
-		speedMultiplier = 2.0f;
+		_speedMultiplier = 2.0f;
 	}
 	else {
-		speedMultiplier = 1.0f;
+		_speedMultiplier = 1.0f;
 	}
 }
 
 void Player::CheckCollisions()
 {
 	//wrap around viewport
-	if (posRect->X > Graphics::GetViewportWidth())
-		posRect->X = -sourceRect->Width;
+	if (_posRect->X > Graphics::GetViewportWidth())
+		_posRect->X = -_sourceRect->Width;
 
-	if (posRect->X < -sourceRect->Width)
-		posRect->X = Graphics::GetViewportWidth();
+	if (_posRect->X < -_sourceRect->Width)
+		_posRect->X = Graphics::GetViewportWidth();
 
-	if (posRect->Y > Graphics::GetViewportHeight())
-		posRect->Y = -sourceRect->Height;
+	if (_posRect->Y > Graphics::GetViewportHeight())
+		_posRect->Y = -_sourceRect->Height;
 
-	if (posRect->Y < -sourceRect->Height)
-		posRect->Y = Graphics::GetViewportHeight();
+	if (_posRect->Y < -_sourceRect->Height)
+		_posRect->Y = Graphics::GetViewportHeight();
 }
 
 const Circle& Player::GetBoundingCircle()
 {
-	return *boundingCircle;
+	return *_boundingCircle;
 }
 
 bool Player::IsDead()
 {
-	return dead;
+	return _dead;
 }
 
 void Player::Kill()
 {
-	dead = true;
+	_dead = true;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#define GHOSTCOUNT 5
+#define GHOSTCOUNT 3
 
 
 // If Windows and not in Debug, this will run without a console window
@@ -15,6 +15,7 @@
 #include "S2D/S2D.h"
 #include "Circle.h"
 #include "Player.h"
+#include "Munchie.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -71,7 +72,9 @@ private:
 	int _munchieCount;
 	int _munchiesEaten;
 	const float _cMunchieMutiplier;
+
 	Texture2D* _munchieTexture;
+	Texture2D* _pacmanTexture;
 
 	Menu* _startMenu;
 	Menu* _pauseMenu;
@@ -131,4 +134,6 @@ public:
 
 	/// <summary> Called every frame - draw game here. </summary>
 	void virtual Draw(int elapsedTime);
+
+	Player& GetPlayer();
 };

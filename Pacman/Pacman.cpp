@@ -52,7 +52,9 @@ Pacman::~Pacman()
 		DeleteMunchie(&_munchies[iii]);
 	}
 	delete[] _munchies;
+
 	delete _munchieTexture;
+	delete _pacmanTexture;
 	
 	delete _pacman;
 
@@ -85,7 +87,9 @@ Pacman::~Pacman()
 void Pacman::LoadContent()
 {
 	// Load Pacman
-	_pacman->Load();
+	_pacmanTexture = new Texture2D();
+	_pacmanTexture->Load("Textures/Pacman.tga", false);
+	_pacman->Load(_pacmanTexture);
 
 	// Load Munchies
 	_munchieTexture = new Texture2D();
@@ -326,7 +330,7 @@ void Pacman::UpdateMunchie(Enemy& munchie, int elapsedTime)
 
 	munchie.rect->X = munchie.rect->Width * munchie.frameCount;
 
-	}
+}
 
 void Pacman::CheckMunchieCollisions()
 {
@@ -530,4 +534,9 @@ void Pacman::CheckGhostCollision()
 		if (_pacman->GetBoundingCircle().Intersects(*_ghosts[iii]->posRect))
 			_pacman->Kill();
 	}
+}
+
+Player& Pacman::GetPlayer()
+{
+	return *_pacman;
 }

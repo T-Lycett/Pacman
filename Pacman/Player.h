@@ -9,12 +9,12 @@ using namespace S2D;
 class Player : public GameObject
 {
 private:
-	int direction;
-	int frame;
-	int currentFrameTime;
-	float speedMultiplier;
-	Circle* boundingCircle;
-	bool dead;
+	int _direction;
+	int _frame;
+	int _currentFrameTime;
+	float _speedMultiplier;
+	Circle* _boundingCircle;
+	bool _dead;
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -28,7 +28,7 @@ public:
 	Player();
 	~Player();
 
-	void Load();
+	void Load(Texture2D* texture);
 	void Update(int elapsedTime);
 	void Draw();
 

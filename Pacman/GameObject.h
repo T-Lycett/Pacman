@@ -7,18 +7,18 @@ using namespace S2D;
 class GameObject
 {
 protected:
-	Texture2D* texture;
-	Rect* sourceRect;
-	Rect* posRect;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	Rect* _posRect;
 public:
 	GameObject();
 	virtual ~GameObject();
 
-	virtual void Load();
+	virtual void Load(Texture2D* texture);
 	virtual void Update(int elapsedTime);
 	virtual void Draw();
 
 	virtual void SetPosition(float x, float y);
-	virtual const Rect& GetPosition();
+	virtual const Rect& GetPosition() const;
 };
 
