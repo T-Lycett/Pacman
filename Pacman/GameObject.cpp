@@ -30,10 +30,7 @@ void GameObject::Update(int elapsedTime)
 
 void GameObject::Draw()
 {
-	if (_texture != nullptr && _sourceRect != nullptr)
-	{
-		SpriteBatch::Draw(_texture, _sourceRect, _posRect);
-	}
+	SpriteBatch::Draw(_texture, _posRect, _sourceRect);
 }
 
 void GameObject::SetPosition(float x, float y)

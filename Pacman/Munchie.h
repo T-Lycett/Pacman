@@ -10,10 +10,6 @@ private:
 	int _currentFrameTime;
 	const int _cMunchieFrameTime;
 
-	SoundEffect* _pop;
-
-	void OnCollected();
-	Rect& GetBoundingRect();
 public:
 	Munchie();
 	~Munchie();
@@ -21,5 +17,7 @@ public:
 	void Load(Texture2D* texture);
 	void Update(int elapsedTime);
 
+	void OnCollected();
 	bool IsEaten();
+	const Rect& GetBoundingRect();
 };

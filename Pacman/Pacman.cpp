@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cMunchieFrameTime(500), _cMunchieMoveTrigger(100), _cMunchieSpeed(0.1), _cPauseKey(Input::Keys::P), _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _cMunchieMutiplier(1.5f)
+Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _cMunchieMutiplier(1.5f)
 {
 	srand(time(nullptr));
 
@@ -16,7 +16,7 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cM
 
 	_munchiesEaten = 0;
 	_munchieCount = munchieCount;
-	_munchies = new Enemy[munchieCount];
+	_munchies = new Munchie[_munchieCount];
 	
 	_paused = false;
 	_pKeyDown = false;
@@ -46,11 +46,6 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cM
 
 Pacman::~Pacman()
 {
-
-	for (int iii = 0; iii < _munchieCount; iii++)
-	{
-		DeleteMunchie(&_munchies[iii]);
-	}
 	delete[] _munchies;
 
 	delete _munchieTexture;
@@ -80,8 +75,6 @@ Pacman::~Pacman()
 	delete _gameOverMenu->rectangle;
 	delete _gameOverMenu->stringPosition;
 	delete _gameOverMenu;
-
-	delete _pop;
 }
 
 void Pacman::LoadContent()
@@ -96,7 +89,7 @@ void Pacman::LoadContent()
 	_munchieTexture->Load("Textures/Cherry.png", false);
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		LoadMunchie(_munchies[iii]);
+		_munchies[iii].Load(_munchieTexture);
 	}
 
 	//load ghost
@@ -160,8 +153,6 @@ void Pacman::Update(int elapsedTime)
 
 		UpdateMunchies(elapsedTime);
 
-		CheckViewportCollision();
-
 		CheckMunchieCollisions();
 
 		UpdateGhosts(elapsedTime);
@@ -181,8 +172,8 @@ void Pacman::Draw(int elapsedTime)
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (!_munchies[iii].eaten)
-			SpriteBatch::Draw(_munchies[iii].texture, _munchies[iii].posRect, _munchies[iii].rect);
+		if (!_munchies[iii].IsEaten())
+			_munchies[iii].Draw();
 	}
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
@@ -218,6 +209,7 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::DrawString(menuStream.str().c_str(), _gameOverMenu->stringPosition,
 			Color::Red);
 	}
+
 	SpriteBatch::EndDraw(); // Ends Drawing
 }
 
@@ -234,8 +226,9 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState & state, const Input::M
 	{
 		for (int iii = 0; iii < _munchieCount; iii++)
 		{
-			_munchies[iii].posRect->X = rand() % (Graphics::GetViewportWidth() - _munchies[iii].rect->Width);
-			_munchies[iii].posRect->Y = rand() % (Graphics::GetViewportHeight() - _munchies[iii].rect->Height);
+			float x = rand() % (Graphics::GetViewportWidth() - _munchies[iii].GetBoundingRect().Width);
+			float y = rand() % (Graphics::GetViewportHeight() - _munchies[iii].GetBoundingRect().Height);
+			_munchies[iii].SetPosition(x, y);
 		}
 
 
@@ -269,104 +262,42 @@ void Pacman::CheckStart(Input::KeyboardState & state)
 	}
 }
 
-void Pacman::CheckViewportCollision()
-{
-	for (int iii = 0; iii < _munchieCount; iii++)
-	{
-		if (_munchies[iii].posRect->X > Graphics::GetViewportWidth() - _munchies[iii].rect->X)
-			_munchies[iii].posRect->X = 0;
-
-		if (_munchies[iii].posRect->X < 0)
-			_munchies[iii].posRect->X = Graphics::GetViewportWidth() - _munchies[iii].rect->Width;
-
-		if (_munchies[iii].posRect->Y > Graphics::GetViewportHeight() - _munchies[iii].rect->Height)
-			_munchies[iii].posRect->Y = 0;
-
-		if (_munchies[iii].posRect->Y < 0)
-			_munchies[iii].posRect->Y = Graphics::GetViewportHeight() - _munchies[iii].rect->Height;
-	}
-
-}
-
 void Pacman::UpdateMunchies(int elapsedTime)
 {
 	if (_munchieCount == _munchiesEaten)
 	{
-		for (int iii = 0; iii < _munchieCount; iii++)
-		{
-			DeleteMunchie(&_munchies[iii]);
-		}
 		delete[] _munchies;
 
 		_munchieCount = _munchieCount * _cMunchieMutiplier;
 		_munchiesEaten = 0;
 
-		_munchies = new Enemy[_munchieCount];
+		_munchies = new Munchie[_munchieCount];
 
 		for (int iii = 0; iii < _munchieCount; iii++)
 		{
-			LoadMunchie(_munchies[iii]);
+			_munchies[iii].Load(_munchieTexture);
 		}
 	}
-
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		UpdateMunchie(_munchies[iii], elapsedTime);
+		_munchies[iii].Update(elapsedTime);
 	}
-}
-
-void Pacman::UpdateMunchie(Enemy& munchie, int elapsedTime)
-{
-	munchie.currentFrameTime += elapsedTime;
-	if (munchie.currentFrameTime > _cMunchieFrameTime)
-	{
-		munchie.frameCount++;
-
-		if (munchie.frameCount >= 2)
-			munchie.frameCount = 0;
-		
-		munchie.currentFrameTime = 0;
-	}
-
-	munchie.rect->X = munchie.rect->Width * munchie.frameCount;
-
 }
 
 void Pacman::CheckMunchieCollisions()
 {
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (!_munchies[iii].eaten)
+		if (!_munchies[iii].IsEaten())
 		{
-			if (_pacman->GetBoundingCircle().Intersects(*_munchies[iii].posRect))
+			if (_pacman->GetBoundingCircle().Intersects(_munchies[iii].GetBoundingRect()))
 			{
 				Audio::Play(_pop);
-				_munchies[iii].eaten = true;
+				_munchies[iii].OnCollected();
 				_munchiesEaten++;
 			}
 		}
 	}
-}
-
-void Pacman::LoadMunchie(Enemy& munchie)
-{
-	munchie.texture = _munchieTexture;
-	munchie.frameCount = rand() % 1;
-	munchie.currentFrameTime = (rand() % 500) + 50;
-	munchie.eaten = false;
-	munchie.rect = new Rect(0.0f, 0.0f, 32, 32);
-	munchie.posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 32, 32);
-}
-
-void Pacman::DeleteMunchie(Enemy* munchie)
-{
-	delete munchie->rect;
-	munchie->rect = nullptr;
-
-	delete munchie->posRect;
-	munchie->posRect = nullptr;
-
-	munchie->texture = nullptr;
 }
 
 void Pacman::UpdateGhosts(int elapsedTime)

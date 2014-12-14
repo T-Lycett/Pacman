@@ -21,16 +21,6 @@
 using namespace S2D;
 
 
-struct Enemy
-{
-	int frameCount;
-	Rect* rect;
-	Texture2D* texture;
-	int currentFrameTime;
-	bool eaten;
-	Rect* posRect;
-};
-
 struct MovingEnemy
 {
 	Rect* posRect;
@@ -66,7 +56,7 @@ class Pacman : public Game
 private:
 	
 	Player* _pacman;
-	Enemy* _munchies;
+	Munchie* _munchies;
 	MovingEnemy* _ghosts[GHOSTCOUNT];
 
 	int _munchieCount;
@@ -79,15 +69,14 @@ private:
 	Menu* _startMenu;
 	Menu* _pauseMenu;
 	Menu* _gameOverMenu;
-	
-	const int _cMunchieFrameTime;
 
 	const int _cEnemyMinDirectionTime;
 	const float _cEnemyDistanceStartChase;
 	const float _cEnemyDistanceStopChase;
 
-	const int _cMunchieMoveTrigger;
-	const float _cMunchieSpeed;
+
+	SoundEffect* _pop;
+
 	bool _rKeyDown;
 
 	bool _paused;
@@ -96,25 +85,16 @@ private:
 	bool _spaceKeyDown;
 	const Input::Keys _cPauseKey;
 
-	SoundEffect* _pop;
-
 	void Input(int elapsedTime, Input::KeyboardState & state, const Input::MouseState & mouseState);
 
 	void CheckPaused(Input::KeyboardState & state, Input::Keys pauseKey);
 	void CheckStart(Input::KeyboardState & state);
 
-	void CheckViewportCollision();
-
 	void UpdatePacman(int elapsedTime);
 
 	void UpdateMunchies(int elapsedTime);
 
-	void UpdateMunchie(Enemy & munchie, int elapsedTime);
 	void CheckMunchieCollisions();
-
-	void LoadMunchie(Enemy& munchie);
-
-	void DeleteMunchie(Enemy* munchie);
 
 	void UpdateGhosts(int elapsedTime);
 	void CheckGhostCollision();
