@@ -16,8 +16,6 @@ private:
 	Circle* _boundingCircle;
 	bool _dead;
 
-	// Position for String
-	Vector2* _stringPosition;
 
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
@@ -30,7 +28,6 @@ public:
 
 	void Load(Texture2D* texture);
 	void Update(int elapsedTime);
-	void Draw();
 
 	const Circle& GetBoundingCircle();
 	bool IsDead();

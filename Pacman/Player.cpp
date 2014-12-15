@@ -14,7 +14,6 @@ Player::Player() : _cPlayerSpeed(0.1f), _cPlayerFrameTime(250)
 Player::~Player()
 {
 	delete _boundingCircle;
-	delete _stringPosition;
 }
 
 void Player::Load(Texture2D* texture)
@@ -23,8 +22,6 @@ void Player::Load(Texture2D* texture)
 	_posRect = new Rect(350.0f, 350.0f, 32, 32);
 	_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_boundingCircle = new Circle(_posRect->Center(), 16.0f);
-	// Set string position
-	_stringPosition = new Vector2(10.0f, 25.0f);
 }
 
 void Player::Update(int elapsedTime)
@@ -50,20 +47,6 @@ void Player::Update(int elapsedTime)
 	_boundingCircle->Center(_posRect->Center());
 
 	CheckCollisions();
-}
-
-void Player::Draw()
-{
-	// Allows us to easily create a string
-	std::stringstream stream;
-	stream << "Pacman X: " << _posRect->X << " Y: " << _posRect->Y << endl;
-	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
-
-	if (!_dead)
-	{
-		SpriteBatch::Draw(_texture, _posRect, _sourceRect); // Draws Pacman
-	}
 }
 
 void Player::Input(int elapsedTime)

@@ -85,18 +85,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="MovingEnemy.cpp" />
     <ClCompile Include="Munchie.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="MovingEnemy.h" />
     <ClInclude Include="Munchie.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

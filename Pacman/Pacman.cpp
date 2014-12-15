@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _cMunchieMutiplier(1.5f)
+Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cMunchieMutiplier(1.5f)
 {
 	srand(time(nullptr));
 
@@ -27,12 +27,6 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
 		_ghosts[iii] = new MovingEnemy();
-		_ghosts[iii]->direction = 0;
-		_ghosts[iii]->directionTime = (rand() % 1500) + 1000;
-		_ghosts[iii]->currentDirectionTime = 0;
-		_ghosts[iii]->speed = 0.2f;
-		_ghosts[iii]->behaviour = static_cast<EnemyBehaviour>((iii % 2) + 1);
-		//_ghosts[iii]->behaviour = EnemyBehaviour::CHASE;
 	}
 
 	//Initialise important Game aspects
@@ -50,16 +44,17 @@ Pacman::~Pacman()
 
 	delete _munchieTexture;
 	delete _pacmanTexture;
+	delete _ghostTex;
 	
 	delete _pacman;
 
+	delete _stringPosition;
+
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		delete _ghosts[iii]->texture;
-		delete _ghosts[iii]->sourceRect;
-		delete _ghosts[iii]->posRect;
 		delete _ghosts[iii];
 	}
+	delete[] _ghosts;
 
 	delete _startMenu->background;
 	delete _startMenu->rectangle;
@@ -84,6 +79,9 @@ void Pacman::LoadContent()
 	_pacmanTexture->Load("Textures/Pacman.tga", false);
 	_pacman->Load(_pacmanTexture);
 
+	// Set string position
+	_stringPosition = new Vector2(10.0f, 25.0f);
+
 	// Load Munchies
 	_munchieTexture = new Texture2D();
 	_munchieTexture->Load("Textures/Cherry.png", false);
@@ -93,13 +91,12 @@ void Pacman::LoadContent()
 	}
 
 	//load ghost
-	Texture2D* ghostTex = new Texture2D();
-	ghostTex->Load("Textures/ghost.png", false);
+	_ghostTex = new Texture2D();
+	_ghostTex->Load("Textures/ghost.png", false);
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		_ghosts[iii]->texture = ghostTex;
-		_ghosts[iii]->posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
-		_ghosts[iii]->sourceRect = new Rect(0.0f, 0.0f, 20, 20);
+		_ghosts[iii]->Load(_ghostTex);
+		_ghosts[iii]->SetPlayer(_pacman);
 	}
 
 	// Set Menu Paramters
@@ -168,7 +165,12 @@ void Pacman::Draw(int elapsedTime)
 
 	SpriteBatch::BeginDraw(); // Starts Drawing
 
-	
+
+	// Allows us to easily create a string
+	std::stringstream stream;
+	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().X << endl;
+	// Draws String
+	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
@@ -178,7 +180,7 @@ void Pacman::Draw(int elapsedTime)
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		SpriteBatch::Draw(_ghosts[iii]->texture, _ghosts[iii]->posRect, _ghosts[iii]->sourceRect);
+		_ghosts[iii]->Draw();
 	}
 
 	if (_paused)
@@ -199,7 +201,7 @@ void Pacman::Draw(int elapsedTime)
 			Color::Red);
 	}
 	
-	_pacman->Draw();
+	
 
 	if (_pacman->IsDead())
 	{
@@ -208,6 +210,10 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_gameOverMenu->background, _gameOverMenu->rectangle, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _gameOverMenu->stringPosition,
 			Color::Red);
+	}
+	else
+	{
+		_pacman->Draw();
 	}
 
 	SpriteBatch::EndDraw(); // Ends Drawing
@@ -304,157 +310,7 @@ void Pacman::UpdateGhosts(int elapsedTime)
 {
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		int startDirection = _ghosts[iii]->direction;
-
-		if (_ghosts[iii]->direction == 0)
-		{
-			//move right
-			_ghosts[iii]->posRect->X += _ghosts[iii]->speed * elapsedTime;
-		}
-		else if (_ghosts[iii]->direction == 2)
-		{
-			//move left
-			_ghosts[iii]->posRect->X -= _ghosts[iii]->speed * elapsedTime;
-		}
-		else if (_ghosts[iii]->direction == 1)
-		{
-			//move down
-			_ghosts[iii]->posRect->Y += _ghosts[iii]->speed * elapsedTime;
-		}
-		else if (_ghosts[iii]->direction == 3)
-		{
-			//move up
-			_ghosts[iii]->posRect->Y -= _ghosts[iii]->speed * elapsedTime;
-		}
-
-		if (_ghosts[iii]->behaviour == EnemyBehaviour::MOVE_RANDOM)
-		{
-			_ghosts[iii]->speed = 0.1f;
-			_ghosts[iii]->sourceRect->X = 0;
-
-			if (_ghosts[iii]->posRect->X + _ghosts[iii]->posRect->Width >= Graphics::GetViewportWidth())
-			{
-				_ghosts[iii]->direction = 2;
-			}
-			else if (_ghosts[iii]->posRect->X <= 0)
-			{
-				_ghosts[iii]->direction = 0;
-			}
-			else if (_ghosts[iii]->posRect->Y + _ghosts[iii]->posRect->Height >= Graphics::GetViewportHeight())
-			{
-				_ghosts[iii]->direction = 3;
-			}
-			else if (_ghosts[iii]->posRect->Y <= 0)
-			{
-				_ghosts[iii]->direction = 1;
-			}
-
-			if (_ghosts[iii]->currentDirectionTime >= _ghosts[iii]->directionTime)
-			{
-				_ghosts[iii]->direction = rand() % 4;
-			}
-
-			if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
-			{
-				_ghosts[iii]->previousBehaviour = _ghosts[iii]->behaviour;
-				_ghosts[iii]->behaviour = EnemyBehaviour::CHASE;
-				//
-			}
-		}
-		else if (_ghosts[iii]->behaviour == EnemyBehaviour::CHASE)
-		{
-			if (!_pacman->IsDead())
-			{
-				_ghosts[iii]->speed = 0.15f;
-				_ghosts[iii]->sourceRect->X = 40.0f;
-				if (_ghosts[iii]->currentDirectionTime > _cEnemyMinDirectionTime)
-				{
-					if (abs(_ghosts[iii]->posRect->X - _pacman->GetPosition().X) > abs(_ghosts[iii]->posRect->Y - _pacman->GetPosition().Y))
-					{
-						if (_ghosts[iii]->posRect->X > _pacman->GetPosition().X)
-						{
-							_ghosts[iii]->direction = 2;
-						}
-						else
-						{
-							_ghosts[iii]->direction = 0;
-						}
-					}
-					else
-					{
-						if (_ghosts[iii]->posRect->Y > _pacman->GetPosition().Y)
-						{
-							_ghosts[iii]->direction = 3;
-						}
-						else
-						{
-							_ghosts[iii]->direction = 1;
-						}
-					}
-				}
-				if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) > _cEnemyDistanceStopChase)
-				{
-					_ghosts[iii]->behaviour = _ghosts[iii]->previousBehaviour;
-					_ghosts[iii]->previousBehaviour = EnemyBehaviour::CHASE;
-				}
-
-			}
-			else
-			{
-				_ghosts[iii]->behaviour = _ghosts[iii]->previousBehaviour;
-				_ghosts[iii]->previousBehaviour = EnemyBehaviour::CHASE;
-			}
-		}
-		else if (_ghosts[iii]->behaviour == EnemyBehaviour::PATROL)
-		{
-			_ghosts[iii]->speed = 0.1f;
-			_ghosts[iii]->sourceRect->X = 20.0f;
-			if (_ghosts[iii]->direction == 0)
-			{
-				if (_ghosts[iii]->posRect->X + _ghosts[iii]->posRect->Width >= Graphics::GetViewportWidth())
-				{
-					_ghosts[iii]->direction = 3;
-				}
-			}
-			if (_ghosts[iii]->direction == 2)
-			{
-				if (_ghosts[iii]->posRect->X <= 0)
-				{
-					_ghosts[iii]->direction = 1;
-				}
-			}
-			if (_ghosts[iii]->direction == 1)
-			{
-				if (_ghosts[iii]->posRect->Y + _ghosts[iii]->posRect->Height >= Graphics::GetViewportHeight())
-				{
-					_ghosts[iii]->direction = 0;
-				}
-			}
-			if (_ghosts[iii]->direction == 3)
-			{
-				if (_ghosts[iii]->posRect->Y <= 0)
-				{
-					_ghosts[iii]->direction = 2;
-				}
-			}
-			if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->posRect->Center()) < _cEnemyDistanceStartChase)
-			{
-				_ghosts[iii]->previousBehaviour = _ghosts[iii]->behaviour;
-				_ghosts[iii]->behaviour = EnemyBehaviour::CHASE;
-			}
-		}
-
-		if (startDirection != _ghosts[iii]->direction)
-		{
-			_ghosts[iii]->currentDirectionTime = 0;
-			_ghosts[iii]->directionTime = (rand() % 1500) + 1000;
-		}
-		else
-		{
-			_ghosts[iii]->currentDirectionTime += elapsedTime;
-		}
-
-		_ghosts[iii]->sourceRect->Y = _ghosts[iii]->sourceRect->Height * _ghosts[iii]->direction;
+		_ghosts[iii]->Update(elapsedTime);
 	}
 }
 
@@ -462,12 +318,7 @@ void Pacman::CheckGhostCollision()
 {
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		if (_pacman->GetBoundingCircle().Intersects(*_ghosts[iii]->posRect))
+		if (_pacman->GetBoundingCircle().Intersects(_ghosts[iii]->GetBoundingRect()))
 			_pacman->Kill();
 	}
-}
-
-Player& Pacman::GetPlayer()
-{
-	return *_pacman;
 }

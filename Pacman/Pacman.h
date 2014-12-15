@@ -13,39 +13,22 @@
 
 // Just need to include main header file
 #include "S2D/S2D.h"
+
+
 #include "Circle.h"
 #include "Player.h"
 #include "Munchie.h"
+#include "MovingEnemy.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
 
-
-struct MovingEnemy
-{
-	Rect* posRect;
-	Rect* sourceRect;
-	Texture2D* texture;
-	int direction;
-	int directionTime;
-	int currentDirectionTime;
-	float speed;
-	enum EnemyBehaviour behaviour;
-	enum EnemyBehaviour previousBehaviour;
-};
 
 struct Menu
 {
 	Texture2D* background;
 	Rect* rectangle;
 	Vector2* stringPosition;
-};
-
-enum EnemyBehaviour
-{
-	MOVE_RANDOM,
-	CHASE,
-	PATROL,
 };
 
 // Declares the Pacman class which inherits from the Game class.
@@ -59,21 +42,20 @@ private:
 	Munchie* _munchies;
 	MovingEnemy* _ghosts[GHOSTCOUNT];
 
+	// Position for String
+	Vector2* _stringPosition;
+
 	int _munchieCount;
 	int _munchiesEaten;
 	const float _cMunchieMutiplier;
 
 	Texture2D* _munchieTexture;
 	Texture2D* _pacmanTexture;
+	Texture2D* _ghostTex;
 
 	Menu* _startMenu;
 	Menu* _pauseMenu;
 	Menu* _gameOverMenu;
-
-	const int _cEnemyMinDirectionTime;
-	const float _cEnemyDistanceStartChase;
-	const float _cEnemyDistanceStopChase;
-
 
 	SoundEffect* _pop;
 
@@ -114,6 +96,4 @@ public:
 
 	/// <summary> Called every frame - draw game here. </summary>
 	void virtual Draw(int elapsedTime);
-
-	Player& GetPlayer();
 };
