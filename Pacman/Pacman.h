@@ -57,8 +57,6 @@ private:
 	Menu* _pauseMenu;
 	Menu* _gameOverMenu;
 
-	SoundEffect* _pop;
-
 	bool _rKeyDown;
 
 	bool _paused;

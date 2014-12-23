@@ -121,9 +121,7 @@ void Pacman::LoadContent()
 	_gameOverMenu->stringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f,
 		Graphics::GetViewportHeight() / 2.0f);
 
-	//load sounds
-	_pop = new SoundEffect();
-	_pop->Load("Sounds/pop.wav");
+	
 }
 
 void Pacman::Update(int elapsedTime)
@@ -300,7 +298,6 @@ void Pacman::CheckMunchieCollisions()
 		{
 			if (_pacman->GetBoundingCircle().Intersects(_munchies[iii].GetBoundingRect()))
 			{
-				Audio::Play(_pop);
 				_munchies[iii].OnCollected();
 				_munchiesEaten++;
 			}

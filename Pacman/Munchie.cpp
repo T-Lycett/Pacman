@@ -13,6 +13,7 @@ Munchie::Munchie() : _cMunchieFrameTime(500)
 
 Munchie::~Munchie()
 {
+	delete _pop;
 }
 
 
@@ -21,6 +22,10 @@ void Munchie::Load(Texture2D* texture)
 	_texture = texture;
 	_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_posRect = new Rect(rand() % (Graphics::GetViewportWidth() - _sourceRect->Width), rand() % (Graphics::GetViewportHeight() - _sourceRect->Height), 32, 32);
+
+	//load sounds
+	_pop = new SoundEffect();
+	_pop->Load("Sounds/pop.wav");
 }
 
 
@@ -43,6 +48,7 @@ void Munchie::Update(int elapsedTime)
 
 void Munchie::OnCollected()
 {
+	Audio::Play(_pop);
 	_eaten = true;
 }
 

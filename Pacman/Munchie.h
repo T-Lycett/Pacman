@@ -10,6 +10,8 @@ private:
 	int _currentFrameTime;
 	const int _cMunchieFrameTime;
 
+	SoundEffect* _pop;
+
 public:
 	Munchie();
 	~Munchie();
