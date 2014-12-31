@@ -17,6 +17,10 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 	_munchiesEaten = 0;
 	_munchieCount = munchieCount;
 	_munchies = new Munchie[_munchieCount];
+
+	_fogOfWar = true;
+	_fogOfWarDistance = 300;
+	_fKeyDown = false;
 	
 	_paused = false;
 	_pKeyDown = false;
@@ -134,6 +138,8 @@ void Pacman::Update(int elapsedTime)
 		CheckStart(*keyboardState);
 
 		CheckPaused(*keyboardState, _cPauseKey);
+
+		CheckFogOfWar(*keyboardState);
 	}
 	
 	if (!_paused && _start)
@@ -149,8 +155,10 @@ void Pacman::Update(int elapsedTime)
 		UpdateGhosts(elapsedTime);
 
 		CheckGhostCollision();
-		
+
 	}
+
+	UpdateFogOfWar();
 }
 
 void Pacman::Draw(int elapsedTime)
@@ -160,9 +168,16 @@ void Pacman::Draw(int elapsedTime)
 
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().X << endl;
+	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().X;
 	if (elapsedTime)
-		stream << "FPS: " << 1000 / elapsedTime;
+		stream << endl << "FPS: " << 1000 / elapsedTime;
+
+	stream << endl << "Fog of War: ";
+	if (_fogOfWar)
+		stream << "On";
+	else
+		stream << "Off";
+
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
 
@@ -304,5 +319,49 @@ void Pacman::CheckGhostCollision()
 	{
 		if (_pacman->GetBoundingCircle().Intersects(_ghosts[iii]->GetBoundingRect()))
 			_pacman->Kill();
+	}
+}
+
+void Pacman::CheckFogOfWar(Input::KeyboardState& state)
+{
+	if (state.IsKeyDown(Input::Keys::F) && !_fKeyDown)
+	{
+		_fKeyDown = true;
+		_fogOfWar = !_fogOfWar;
+	}
+	if (state.IsKeyUp(Input::Keys::F))
+		_fKeyDown = false;
+}
+
+void Pacman::UpdateFogOfWar()
+{
+	if (!_fogOfWar)
+	{
+		for (int iii = 0; iii < _munchieCount; iii++)
+		{
+			_munchies[iii].SetDraw(true);
+		}
+
+		for (int iii = 0; iii < GHOSTCOUNT; iii++)
+		{
+			_ghosts[iii]->SetDraw(true);
+		}
+		return;
+	}
+
+	for (int iii = 0; iii < _munchieCount; iii++)
+	{
+		if (Vector2::Distance(_pacman->GetPosition().Center(), _munchies[iii].GetPosition().Center()) < _fogOfWarDistance)
+			_munchies[iii].SetDraw(true);
+		else
+			_munchies[iii].SetDraw(false);
+	}
+
+	for (int iii = 0; iii < GHOSTCOUNT; iii++)
+	{
+		if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->GetPosition().Center()) < _fogOfWarDistance)
+			_ghosts[iii]->SetDraw(true);
+		else
+			_ghosts[iii]->SetDraw(false);
 	}
 }

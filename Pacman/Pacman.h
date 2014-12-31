@@ -49,6 +49,10 @@ private:
 	int _munchiesEaten;
 	const float _cMunchieMutiplier;
 
+	bool _fogOfWar;
+	int _fogOfWarDistance;
+	bool _fKeyDown;
+
 	Texture2D* _munchieTexture;
 	Texture2D* _pacmanTexture;
 	Texture2D* _ghostTex;
@@ -78,6 +82,10 @@ private:
 
 	void UpdateGhosts(int elapsedTime);
 	void CheckGhostCollision();
+
+	void CheckFogOfWar(Input::KeyboardState& state);
+
+	void UpdateFogOfWar();
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
