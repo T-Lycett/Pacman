@@ -1,14 +1,32 @@
-﻿Build started 31/12/2014 01:59:02.
+﻿Build started 31/12/2014 22:35:59.
      1>Project "C:\Users\Thomas\Source\Repos\pacman\Pacman\Pacman.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MovingEnemy.cpp Pacman.cpp main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameObject.cpp MovingEnemy.cpp Munchie.cpp Pacman.cpp Player.cpp Tile.cpp main.cpp
+         Player.cpp
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(51): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(53): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(100): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(103): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(106): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\player.cpp(109): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+         Pacman.cpp
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(9): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(57): warning C4154: deletion of an array expression; conversion to pointer supplied
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(220): warning C4244: 'initializing' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(221): warning C4244: 'initializing' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(262): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+         GameObject.cpp
+         Generating Code...
+         Compiling...
+         main.cpp
+         Tile.cpp
+         Munchie.cpp
+     1>c:\users\thomas\source\repos\pacman\pacman\munchie.cpp(24): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\thomas\source\repos\pacman\pacman\munchie.cpp(45): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
          MovingEnemy.cpp
      1>c:\users\thomas\source\repos\pacman\pacman\movingenemy.cpp(23): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\thomas\source\repos\pacman\pacman\movingenemy.cpp(159): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
          Generating Code...
-         Skipping... (no relevant changes detected)
-         main.cpp
-         Pacman.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj
          Debug\Level.obj
@@ -24,4 +42,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.24
+Time Elapsed 00:00:06.66

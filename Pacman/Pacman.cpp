@@ -140,10 +140,7 @@ void Pacman::Update(int elapsedTime)
 	{
 		Input(elapsedTime, *keyboardState, *mouseState);
 
-		if (!_pacman->IsDead())
-		{
-			_pacman->Update(elapsedTime);
-		}
+		_pacman->Update(elapsedTime);
 
 		UpdateMunchies(elapsedTime);
 
@@ -158,8 +155,6 @@ void Pacman::Update(int elapsedTime)
 
 void Pacman::Draw(int elapsedTime)
 {
-	//stream << "Munchie X: " << _munchie->position->X << " Y: " << _munchie->position->Y;
-
 	SpriteBatch::BeginDraw(); // Starts Drawing
 
 
@@ -210,10 +205,8 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::DrawString(menuStream.str().c_str(), _gameOverMenu->stringPosition,
 			Color::Red);
 	}
-	else
-	{
-		_pacman->Draw();
-	}
+	
+	_pacman->Draw();
 
 	SpriteBatch::EndDraw(); // Ends Drawing
 }

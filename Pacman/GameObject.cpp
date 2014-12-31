@@ -6,6 +6,8 @@ GameObject::GameObject()
 	_texture = nullptr;
 	_sourceRect = nullptr;
 	_posRect = nullptr;
+
+	_draw = true;
 }
 
 
@@ -30,8 +32,10 @@ void GameObject::Update(int elapsedTime)
 
 void GameObject::Draw()
 {
-	SpriteBatch::Draw(_texture, _posRect, _sourceRect);
+	if (_draw)
+		SpriteBatch::Draw(_texture, _posRect, _sourceRect);
 }
+
 
 void GameObject::SetPosition(float x, float y)
 {
@@ -42,7 +46,14 @@ void GameObject::SetPosition(float x, float y)
 	}
 }
 
+
 const Rect& GameObject::GetPosition() const
 {
 	return *_posRect;
+}
+
+
+void GameObject::SetDraw(bool draw)
+{
+	_draw = draw;
 }

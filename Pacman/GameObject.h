@@ -10,6 +10,8 @@ protected:
 	Texture2D* _texture;
 	Rect* _sourceRect;
 	Rect* _posRect;
+
+	bool _draw;
 public:
 	GameObject();
 	virtual ~GameObject();
@@ -20,5 +22,7 @@ public:
 
 	virtual void SetPosition(float x, float y);
 	virtual const Rect& GetPosition() const;
+
+	void SetDraw(bool draw);
 };
 

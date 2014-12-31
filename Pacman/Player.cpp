@@ -26,6 +26,14 @@ void Player::Load(Texture2D* texture)
 
 void Player::Update(int elapsedTime)
 {
+	if (_dead)
+	{
+		_draw = false;
+		return;
+	}
+
+	_draw = true;
+
 	Input(elapsedTime);
 
 	_currentFrameTime += elapsedTime;
