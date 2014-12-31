@@ -17,11 +17,12 @@ MovingEnemy::~MovingEnemy()
 }
 
 
-void MovingEnemy::Load(Texture2D* texture)
+void MovingEnemy::Load(Texture2D* texture, Player* pacman)
 {
 	_texture = texture;
 	_posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
 	_sourceRect = new Rect(0.0f, 0.0f, 20, 20);
+	_pacman = pacman;
 }
 
 
@@ -178,12 +179,6 @@ void MovingEnemy::Update(int elapsedTime)
 	}
 
 	_sourceRect->Y = _sourceRect->Height * _direction;
-}
-
-
-void MovingEnemy::SetPlayer(Player* player)
-{
-	_pacman = player;
 }
 
 

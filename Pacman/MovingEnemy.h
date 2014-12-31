@@ -28,10 +28,9 @@ public:
 	MovingEnemy();
 	~MovingEnemy();
 
-	void Load(Texture2D* texture);
+	void Load(Texture2D* texture, Player* pacman);
 	void Update(int elapsedTime);
 
-	void SetPlayer(Player* _pacman);
 	const Rect& GetBoundingRect();
 };
 

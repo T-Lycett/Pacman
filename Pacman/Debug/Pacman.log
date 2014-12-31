@@ -1,21 +1,6 @@
-﻿Build started 22/12/2014 23:59:21.
+﻿Build started 31/12/2014 00:58:55.
      1>Project "C:\Users\Thomas\Source\Repos\pacman\Pacman\Pacman.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Munchie.cpp Pacman.cpp main.cpp
-         Pacman.cpp
-     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(9): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(57): warning C4154: deletion of an array expression; conversion to pointer supplied
-     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(235): warning C4244: 'initializing' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(236): warning C4244: 'initializing' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\thomas\source\repos\pacman\pacman\pacman.cpp(277): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
-         Munchie.cpp
-     1>c:\users\thomas\source\repos\pacman\pacman\munchie.cpp(24): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\thomas\source\repos\pacman\pacman\munchie.cpp(45): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-         Generating Code...
-         Compiling...
-         main.cpp
-         Generating Code...
-       Link:
+     1>Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Thomas\Source\Repos\pacman\Debug\Pacman.lib" /MACHINE:X86 Debug\Circle.obj
          Debug\Level.obj
          Debug\MovingEnemy.obj
@@ -30,4 +15,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.57
+Time Elapsed 00:00:00.52

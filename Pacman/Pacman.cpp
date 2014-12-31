@@ -95,8 +95,7 @@ void Pacman::LoadContent()
 	_ghostTex->Load("Textures/ghost.png", false);
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		_ghosts[iii]->Load(_ghostTex);
-		_ghosts[iii]->SetPlayer(_pacman);
+		_ghosts[iii]->Load(_ghostTex, _pacman);
 	}
 
 	// Set Menu Paramters
@@ -221,13 +220,6 @@ void Pacman::Draw(int elapsedTime)
 
 void Pacman::Input(int elapsedTime, Input::KeyboardState & state, const Input::MouseState & mouseState)
 {
-
-	/*if (mouseState.LeftButton == Input::ButtonState::PRESSED)
-	{
-		_munchie->position->Y = mouseState->Y - (_munchie->rect->Height / 2);
-		_munchie->position->X = mouseState->X - (_munchie->rect->Width / 2);
-	}*/
-
 	if (state.IsKeyDown(Input::Keys::R) && !_rKeyDown)
 	{
 		for (int iii = 0; iii < _munchieCount; iii++)
