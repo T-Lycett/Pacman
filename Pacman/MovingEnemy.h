@@ -24,6 +24,8 @@ private:
 	const float _cEnemyDistanceStopChase;
 
 	Player* _pacman;
+
+	void MoveTowards(const Rect& position);
 public:
 	MovingEnemy();
 	~MovingEnemy();

@@ -91,31 +91,9 @@ void MovingEnemy::Update(int elapsedTime)
 		{
 			_speed = 0.15f;
 			_sourceRect->X = 40.0f;
-			if (_currentDirectionTime > _cEnemyMinDirectionTime)
-			{
-				if (abs(_posRect->X - _pacman->GetPosition().X) > abs(_posRect->Y - _pacman->GetPosition().Y))
-				{
-					if (_posRect->X > _pacman->GetPosition().X)
-					{
-						_direction = 2;
-					}
-					else
-					{
-						_direction = 0;
-					}
-				}
-				else
-				{
-					if (_posRect->Y > _pacman->GetPosition().Y)
-					{
-						_direction = 3;
-					}
-					else
-					{
-						_direction = 1;
-					}
-				}
-			}
+
+			MoveTowards(_pacman->GetPosition());
+			
 			if (Vector2::Distance(_pacman->GetPosition().Center(), _posRect->Center()) > _cEnemyDistanceStopChase)
 			{
 				_behaviour = _previousBehaviour;
@@ -179,6 +157,36 @@ void MovingEnemy::Update(int elapsedTime)
 	}
 
 	_sourceRect->Y = _sourceRect->Height * _direction;
+}
+
+
+void MovingEnemy::MoveTowards(const Rect& position)
+{
+	if (_currentDirectionTime > _cEnemyMinDirectionTime)
+	{
+		if (abs(_posRect->X - position.X) > abs(_posRect->Y - position.Y))
+		{
+			if (_posRect->X > position.X)
+			{
+				_direction = 2;
+			}
+			else
+			{
+				_direction = 0;
+			}
+		}
+		else
+		{
+			if (_posRect->Y > position.Y)
+			{
+				_direction = 3;
+			}
+			else
+			{
+				_direction = 1;
+			}
+		}
+	}
 }
 
 
