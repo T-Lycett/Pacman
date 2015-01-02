@@ -354,6 +354,14 @@ void Pacman::UpdateFogOfWar()
 		{
 			_ghosts[iii]->SetDraw(true);
 		}
+
+		for (int iii = 0; iii < _cMapHeight; iii++)
+		{
+			for (int jjj = 0; jjj < _cMapWidth; jjj++)
+			{
+				_map->GetTile(jjj, iii).SetDraw(true);
+			}
+		}
 		return;
 	}
 
@@ -371,5 +379,22 @@ void Pacman::UpdateFogOfWar()
 			_ghosts[iii]->SetDraw(true);
 		else
 			_ghosts[iii]->SetDraw(false);
+	}
+
+	for (int iii = 0; iii < _cMapWidth; iii++)
+	{
+		for (int jjj = 0; jjj < _cMapHeight; jjj++)
+		{
+			Tile& tile = _map->GetTile(iii, jjj);
+			if (Vector2::Distance(_pacman->GetPosition().Center(), tile.GetPosition().Center()) < _fogOfWarDistance)
+			{
+				tile.SetDraw(true);
+				tile.Reveal();
+			}
+			else
+			{
+				tile.SetDraw(false);
+			}
+		}
 	}
 }
