@@ -19,6 +19,8 @@
 #include "Player.h"
 #include "Munchie.h"
 #include "MovingEnemy.h"
+#include "Map.h"
+#include "Tile.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -37,6 +39,9 @@ struct Menu
 class Pacman : public Game
 {
 private:
+
+	Map* _map;
+	const int _cMapHeight, _cMapWidth;
 	
 	Player* _pacman;
 	Munchie* _munchies;

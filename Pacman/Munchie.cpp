@@ -7,7 +7,7 @@ Munchie::Munchie() : _cMunchieFrameTime(500)
 	_frameCount = rand() % 1;
 	_currentFrameTime = (rand() % 500) + 50;
 	_eaten = false;
-	
+	_draw = false;
 }
 
 

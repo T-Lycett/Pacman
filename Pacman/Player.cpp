@@ -32,8 +32,6 @@ void Player::Update(int elapsedTime)
 		return;
 	}
 
-	_draw = true;
-
 	Input(elapsedTime);
 
 	_currentFrameTime += elapsedTime;

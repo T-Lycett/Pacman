@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="MovingEnemy.cpp" />
     <ClCompile Include="Munchie.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="MovingEnemy.h" />
     <ClInclude Include="Munchie.h" />
     <ClInclude Include="GameObject.h" />

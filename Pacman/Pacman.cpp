@@ -4,9 +4,11 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cMunchieMutiplier(1.5f)
+Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cMunchieMutiplier(1.5f), _cMapHeight(30), _cMapWidth(40)
 {
 	srand(time(nullptr));
+
+	_map = new Map();
 
 	_pacman = new Player();
 
@@ -35,7 +37,7 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 	//Initialise important Game aspects
 	Audio::Initialise();
-	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 60);
+	Graphics::Initialise(argc, argv, this, _cMapWidth * Tile::SIZE, _cMapHeight * Tile::SIZE, false, 25, 25, "Pacman", 60);
 	Input::Initialise();
 
 	// Start the Game Loop - This calls Update and Draw in game loop
@@ -51,6 +53,8 @@ Pacman::~Pacman()
 	delete _ghostTex;
 	
 	delete _pacman;
+
+	delete _map;
 
 	delete _stringPosition;
 
@@ -78,6 +82,8 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
+	_map->Load("Maps/1.txt", _cMapWidth, _cMapHeight);
+
 	// Load Pacman
 	_pacmanTexture = new Texture2D();
 	_pacmanTexture->Load("Textures/Pacman.tga", false);
@@ -141,6 +147,8 @@ void Pacman::Update(int elapsedTime)
 
 		CheckFogOfWar(*keyboardState);
 	}
+
+	UpdateFogOfWar();
 	
 	if (!_paused && _start)
 	{
@@ -157,14 +165,13 @@ void Pacman::Update(int elapsedTime)
 		CheckGhostCollision();
 
 	}
-
-	UpdateFogOfWar();
 }
 
 void Pacman::Draw(int elapsedTime)
 {
 	SpriteBatch::BeginDraw(); // Starts Drawing
 
+	_map->Draw();
 
 	// Allows us to easily create a string
 	std::stringstream stream;
@@ -180,6 +187,7 @@ void Pacman::Draw(int elapsedTime)
 
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
+
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
