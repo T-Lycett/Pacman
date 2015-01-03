@@ -7,16 +7,13 @@ Map::Map()
 	_floorTexture = new Texture2D();
 	_wallTexture = new Texture2D();
 	_fogOfWarTexture = new Texture2D();
+	_loaded = false;
 }
 
 
 Map::~Map()
 {
-	for (int iii = 0; iii < _height; iii++)
-	{
-		delete[] _tiles[iii];
-	}
-	delete[] _tiles;
+	DeleteTiles();
 
 	delete _floorTexture;
 	delete _wallTexture;
@@ -26,17 +23,38 @@ Map::~Map()
 
 void Map::Load(const char* filename, int width, int height)
 {
-	_floorTexture->Load("Textures/floor.png", false);
-	_wallTexture->Load("Textures/wall.png", false);
-	_fogOfWarTexture->Load("Textures/Transparency.png", false);
-	
-	_tiles = new Tile*[height];
-	for (int iii = 0; iii < height; iii++)
+	if (!_loaded)
 	{
-		_tiles[iii] = new Tile[width];
+		_loaded = true;
+
+		_floorTexture->Load("Textures/floor.png", false);
+		_wallTexture->Load("Textures/wall.png", false);
+		_fogOfWarTexture->Load("Textures/Transparency.png", false);
+
+		_height = height;
+		_width = width;
+
+		LoadTiles(filename);
 	}
-	_height = height;
-	_width = width;
+	else
+	{
+		DeleteTiles();
+
+		_height = height;
+		_width = width;
+
+		LoadTiles(filename);
+	}
+}
+
+
+void Map::LoadTiles(const char* filename)
+{
+	_tiles = new Tile*[_height];
+	for (int iii = 0; iii < _height; iii++)
+	{
+		_tiles[iii] = new Tile[_width];
+	}
 
 	ifstream mapFile;
 	mapFile.open(filename);
@@ -50,6 +68,16 @@ void Map::Load(const char* filename, int width, int height)
 		}
 	}
 	mapFile.close();
+}
+
+
+void Map::DeleteTiles()
+{
+	for (int iii = 0; iii < _height; iii++)
+	{
+		delete[] _tiles[iii];
+	}
+	delete[] _tiles;
 }
 
 

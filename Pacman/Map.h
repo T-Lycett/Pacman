@@ -11,7 +11,12 @@ private:
 	Texture2D* _wallTexture;
 	Texture2D* _fogOfWarTexture;
 
+	bool _loaded;
+
+	void LoadTiles(const char* filename);
 	void LoadTile(char type, int x, int y);
+
+	void DeleteTiles();
 
 	void DrawTiles();
 public:
