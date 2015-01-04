@@ -90,6 +90,7 @@ void Map::LoadTile(char type, int X, int Y)
 		break;
 	case 'w':
 		_tiles[Y][X].Load(_wallTexture, _fogOfWarTexture, X, Y, true, true);
+		break;
 	}
 }
 
@@ -122,4 +123,14 @@ Tile& Map::GetTileAtPosition(float X, float Y)
 {
 	if (Y < _height * Tile::SIZE && X < _width * Tile::SIZE)
 		return _tiles[(int)(Y / Tile::SIZE)][(int)(X / Tile::SIZE)];
+}
+
+
+bool Map::IsValidTile(int X, int Y)
+{
+	if (X >= 0 && Y >= 0 && X < _width && Y < _height)
+	{
+		return true;
+	}
+	return false;
 }

@@ -29,6 +29,8 @@ public:
 
 	Tile& GetTile(int X, int Y);
 	Tile& GetTileAtPosition(float X, float Y);
+	bool IsValidTile(int X, int Y);
+
 	int GetHeight() { return _height; }
 	int GetWidth() { return _width; }
 };

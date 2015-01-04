@@ -10,7 +10,7 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 	_map = new Map();
 
-	_pacman = new Player();
+	_pacman = new Player(*_map);
 
 	_startMenu = new Menu();
 	_pauseMenu = new Menu();
