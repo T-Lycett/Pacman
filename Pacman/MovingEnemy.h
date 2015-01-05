@@ -20,8 +20,7 @@ private:
 	enum EnemyBehaviour _previousBehaviour;
 
 	const int _cEnemyMinDirectionTime;
-	const float _cEnemyDistanceStartChase;
-	const float _cEnemyDistanceStopChase;
+	const float _cSightDistance;
 
 	Player* _pacman;
 	Map& _map;

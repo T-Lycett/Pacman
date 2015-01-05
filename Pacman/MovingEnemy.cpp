@@ -1,7 +1,7 @@
 #include "MovingEnemy.h"
 
 
-MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _map(map)
+MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistance(200.0f), _map(map)
 {
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
@@ -14,6 +14,7 @@ MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cEnemyDistan
 
 MovingEnemy::~MovingEnemy()
 {
+	delete _lastKnownPlayerPos;
 }
 
 
@@ -53,7 +54,7 @@ void MovingEnemy::Update(int elapsedTime)
 		_posRect->Y -= _speed * elapsedTime;
 	}
 
-	bool playerInSight = Vector2::Distance(_pacman->GetPosition().Center(), this->GetPosition().Center()) < _cEnemyDistanceStartChase && _map.InLineOfSight(_pacman->GetPosition().Center(), this->GetPosition().Center());
+	bool playerInSight = Vector2::Distance(_pacman->GetPosition().Center(), this->GetPosition().Center()) < _cSightDistance && _map.InLineOfSight(_pacman->GetPosition().Center(), this->GetPosition().Center());
 	
 	if (playerInSight)
 		*_lastKnownPlayerPos = _pacman->GetPosition().Center();
