@@ -175,7 +175,7 @@ void Pacman::Draw(int elapsedTime)
 
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().X;
+	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().Y;
 	if (elapsedTime)
 		stream << endl << "FPS: " << 1000 / elapsedTime;
 
