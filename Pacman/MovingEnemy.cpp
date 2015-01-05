@@ -14,7 +14,6 @@ MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistan
 
 MovingEnemy::~MovingEnemy()
 {
-	delete _lastKnownPlayerPos;
 }
 
 
@@ -24,8 +23,7 @@ void MovingEnemy::Load(Texture2D* texture, Player* pacman)
 	_posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
 	_sourceRect = new Rect(0.0f, 0.0f, 20, 20);
 	_pacman = pacman;
-	_lastKnownPlayerPos = new Vector2();
-	*_lastKnownPlayerPos = _pacman->GetPosition().Center();
+	_lastKnownPlayerPos = _pacman->GetPosition().Center();
 }
 
 
@@ -57,7 +55,7 @@ void MovingEnemy::Update(int elapsedTime)
 	bool playerInSight = Vector2::Distance(_pacman->GetPosition().Center(), this->GetPosition().Center()) < _cSightDistance && _map.InLineOfSight(_pacman->GetPosition().Center(), this->GetPosition().Center());
 	
 	if (playerInSight)
-		*_lastKnownPlayerPos = _pacman->GetPosition().Center();
+		_lastKnownPlayerPos = _pacman->GetPosition().Center();
 
 	if (_behaviour == EnemyBehaviour::MOVE_RANDOM)
 	{
@@ -97,9 +95,9 @@ void MovingEnemy::Update(int elapsedTime)
 		{
 			_sourceRect->X = 40.0f;
 
-			MoveTowards(*_lastKnownPlayerPos);
+			MoveTowards(_lastKnownPlayerPos);
 			
-			if (this->GetPosition().Contains(*_lastKnownPlayerPos))
+			if (this->GetPosition().Contains(_lastKnownPlayerPos))
 			{
 				_behaviour = _previousBehaviour;
 				_previousBehaviour = EnemyBehaviour::CHASE;

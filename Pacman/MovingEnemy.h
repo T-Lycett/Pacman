@@ -25,7 +25,7 @@ private:
 	Player* _pacman;
 	Map& _map;
 
-	Vector2* _lastKnownPlayerPos;
+	Vector2 _lastKnownPlayerPos;
 
 	void MoveTowards(const Vector2& position);
 public:
