@@ -365,9 +365,11 @@ void Pacman::UpdateFogOfWar()
 		return;
 	}
 
+	Vector2& pacmanPos = _pacman->GetPosition().Center();
+
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (Vector2::Distance(_pacman->GetPosition().Center(), _munchies[iii].GetPosition().Center()) < _fogOfWarDistance)
+		if (Vector2::Distance(pacmanPos, _munchies[iii].GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(pacmanPos, _munchies[iii].GetPosition().Center()))
 			_munchies[iii].SetDraw(true);
 		else
 			_munchies[iii].SetDraw(false);
@@ -375,7 +377,7 @@ void Pacman::UpdateFogOfWar()
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		if (Vector2::Distance(_pacman->GetPosition().Center(), _ghosts[iii]->GetPosition().Center()) < _fogOfWarDistance)
+		if (Vector2::Distance(pacmanPos, _ghosts[iii]->GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(pacmanPos, _ghosts[iii]->GetPosition().Center()))
 			_ghosts[iii]->SetDraw(true);
 		else
 			_ghosts[iii]->SetDraw(false);
@@ -386,7 +388,7 @@ void Pacman::UpdateFogOfWar()
 		for (int jjj = 0; jjj < _cMapHeight; jjj++)
 		{
 			Tile& tile = _map->GetTile(iii, jjj);
-			if (Vector2::Distance(_pacman->GetPosition().Center(), tile.GetPosition().Center()) < _fogOfWarDistance)
+			if (Vector2::Distance(pacmanPos, tile.GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(tile.GetPosition().Center(), pacmanPos))
 			{
 				tile.SetDraw(true);
 				tile.Reveal();

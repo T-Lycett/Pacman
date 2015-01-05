@@ -31,6 +31,8 @@ public:
 	Tile& GetTileAtPosition(float X, float Y);
 	bool IsValidTile(int X, int Y);
 
+	bool InLineOfSight(Vector2& pos1, Vector2& pos2);
+
 	int GetHeight() { return _height; }
 	int GetWidth() { return _width; }
 };

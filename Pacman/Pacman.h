@@ -1,6 +1,6 @@
 #pragma once
 
-#define GHOSTCOUNT 3
+#define GHOSTCOUNT 1
 
 
 // If Windows and not in Debug, this will run without a console window

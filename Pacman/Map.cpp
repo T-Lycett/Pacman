@@ -134,3 +134,73 @@ bool Map::IsValidTile(int X, int Y)
 	}
 	return false;
 }
+
+
+bool Map::InLineOfSight(Vector2& pos1, Vector2& pos2)
+{
+	int x1, y1, x2, y2;
+	if (pos1.X < pos2.X)
+	{
+		x1 = pos1.X;
+		y1 = pos1.Y;
+		x2 = pos2.X;
+		y2 = pos2.Y;
+	}
+	else
+	{
+		x1 = pos2.X;
+		y1 = pos2.Y;
+		x2 = pos1.X;
+		y2 = pos1.Y;
+	}
+
+	if (x1 != x2)
+	{
+		float m = (float) (y2 - y1) / (x2 - x1);
+		float b = y1 - (m * x1);
+		float x = x1 + (Tile::SIZE - (x1 % Tile::SIZE)) + 1;
+		float y = (m * x) + b;
+
+		while (x < x2 - (x2 % Tile::SIZE))
+		{
+			if (GetTileAtPosition(x, y).BlocksSight())
+				return false;
+
+			x += Tile::SIZE;
+			y = (m * x) + b;
+		}
+	}
+
+	if (pos1.Y < pos2.Y)
+	{
+		x1 = pos1.X;
+		y1 = pos1.Y;
+		x2 = pos2.X;
+		y2 = pos2.Y;
+	}
+	else
+	{
+		x1 = pos2.X;
+		y1 = pos2.Y;
+		x2 = pos1.X;
+		y2 = pos1.Y;
+	}
+
+	if (y1 != y2)
+	{
+		float m = (float) (x2 - x1) / (y2 - y1);
+		float b = x1 - (m * y1);
+		float y = y1 + (Tile::SIZE - (y1 % Tile::SIZE)) + 1;
+		float x = (m * y) + b;
+
+		while (y < y2 - (y2 % Tile::SIZE))
+		{
+			if (GetTileAtPosition(x, y).BlocksSight())
+				return false;
+
+			y += Tile::SIZE;
+			x = (m * y) + b;
+		}
+	}
+	return true;
+}
