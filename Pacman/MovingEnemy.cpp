@@ -6,7 +6,7 @@ MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistan
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
 	_currentDirectionTime = 0;
-	_speed = 0.2f;
+	_speed = 0.1f;
 	_behaviour = static_cast<EnemyBehaviour>((rand() % 2) + 1);
 	//_behaviour = EnemyBehaviour::CHASE;
 }
@@ -61,7 +61,6 @@ void MovingEnemy::Update(int elapsedTime)
 
 	if (_behaviour == EnemyBehaviour::MOVE_RANDOM)
 	{
-		_speed = 0.1f;
 		_sourceRect->X = 0;
 
 		if (_posRect->X + _posRect->Width >= Graphics::GetViewportWidth())
@@ -96,7 +95,6 @@ void MovingEnemy::Update(int elapsedTime)
 	{
 		if (!_pacman->IsDead())
 		{
-			_speed = 0.15f;
 			_sourceRect->X = 40.0f;
 
 			MoveTowards(*_lastKnownPlayerPos);
@@ -116,7 +114,6 @@ void MovingEnemy::Update(int elapsedTime)
 	}
 	else if (_behaviour == EnemyBehaviour::PATROL)
 	{
-		_speed = 0.1f;
 		_sourceRect->X = 20.0f;
 		if (_direction == 0)
 		{
