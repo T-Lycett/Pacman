@@ -32,7 +32,7 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		_ghosts[iii] = new MovingEnemy();
+		_ghosts[iii] = new MovingEnemy(*_map);
 	}
 
 	//Initialise important Game aspects

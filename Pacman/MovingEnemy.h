@@ -24,10 +24,13 @@ private:
 	const float _cEnemyDistanceStopChase;
 
 	Player* _pacman;
+	Map& _map;
 
-	void MoveTowards(const Rect& position);
+	Vector2* _lastKnownPlayerPos;
+
+	void MoveTowards(const Vector2& position);
 public:
-	MovingEnemy();
+	MovingEnemy(Map& map);
 	~MovingEnemy();
 
 	void Load(Texture2D* texture, Player* pacman);

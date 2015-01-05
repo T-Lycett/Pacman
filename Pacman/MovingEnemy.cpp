@@ -1,7 +1,7 @@
 #include "MovingEnemy.h"
 
 
-MovingEnemy::MovingEnemy() : _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f)
+MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cEnemyDistanceStartChase(200.0f), _cEnemyDistanceStopChase(250.0f), _map(map)
 {
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
@@ -23,6 +23,8 @@ void MovingEnemy::Load(Texture2D* texture, Player* pacman)
 	_posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
 	_sourceRect = new Rect(0.0f, 0.0f, 20, 20);
 	_pacman = pacman;
+	_lastKnownPlayerPos = new Vector2();
+	*_lastKnownPlayerPos = _pacman->GetPosition().Center();
 }
 
 
@@ -51,6 +53,11 @@ void MovingEnemy::Update(int elapsedTime)
 		_posRect->Y -= _speed * elapsedTime;
 	}
 
+	bool playerInSight = Vector2::Distance(_pacman->GetPosition().Center(), this->GetPosition().Center()) < _cEnemyDistanceStartChase && _map.InLineOfSight(_pacman->GetPosition().Center(), this->GetPosition().Center());
+	
+	if (playerInSight)
+		*_lastKnownPlayerPos = _pacman->GetPosition().Center();
+
 	if (_behaviour == EnemyBehaviour::MOVE_RANDOM)
 	{
 		_speed = 0.1f;
@@ -78,11 +85,10 @@ void MovingEnemy::Update(int elapsedTime)
 			_direction = rand() % 4;
 		}
 
-		if (Vector2::Distance(_pacman->GetPosition().Center(), _posRect->Center()) < _cEnemyDistanceStartChase)
+		if (playerInSight)
 		{
 			_previousBehaviour = _behaviour;
 			_behaviour = EnemyBehaviour::CHASE;
-			//
 		}
 	}
 	else if (_behaviour == EnemyBehaviour::CHASE)
@@ -92,9 +98,9 @@ void MovingEnemy::Update(int elapsedTime)
 			_speed = 0.15f;
 			_sourceRect->X = 40.0f;
 
-			MoveTowards(_pacman->GetPosition());
+			MoveTowards(*_lastKnownPlayerPos);
 			
-			if (Vector2::Distance(_pacman->GetPosition().Center(), _posRect->Center()) > _cEnemyDistanceStopChase)
+			if (this->GetPosition().Contains(*_lastKnownPlayerPos))
 			{
 				_behaviour = _previousBehaviour;
 				_previousBehaviour = EnemyBehaviour::CHASE;
@@ -139,7 +145,7 @@ void MovingEnemy::Update(int elapsedTime)
 				_direction = 2;
 			}
 		}
-		if (Vector2::Distance(_pacman->GetPosition().Center(), _posRect->Center()) < _cEnemyDistanceStartChase)
+		if (playerInSight)
 		{
 			_previousBehaviour = _behaviour;
 			_behaviour = EnemyBehaviour::CHASE;
@@ -160,7 +166,7 @@ void MovingEnemy::Update(int elapsedTime)
 }
 
 
-void MovingEnemy::MoveTowards(const Rect& position)
+void MovingEnemy::MoveTowards(const Vector2& position)
 {
 	if (_currentDirectionTime > _cEnemyMinDirectionTime)
 	{
