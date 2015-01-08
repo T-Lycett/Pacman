@@ -55,11 +55,11 @@ void Map::LoadTiles(const char* folder)
 	stringstream filename;
 	filename << folder << "tiles.txt";
 	mapFile.open(filename.str().c_str());
-	char* row = new char[(_width * 2) + 1];
+	string row;
 
 	for (int iii = 0; iii < _height; iii++)
 	{
-		mapFile.getline(row, (_width * 2) + 1);
+		getline(mapFile, row);
 		for (int jjj = 0; jjj < _width; jjj++)
 		{
 			stringstream textureFilename;
@@ -68,8 +68,6 @@ void Map::LoadTiles(const char* folder)
 		}
 	}
 	mapFile.close();
-
-	delete[] row;
 }
 
 
