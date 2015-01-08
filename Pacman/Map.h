@@ -7,14 +7,12 @@ private:
 	Tile** _tiles;
 	int _height, _width;
 
-	Texture2D* _floorTexture;
-	Texture2D* _wallTexture;
 	Texture2D* _fogOfWarTexture;
 
 	bool _loaded;
 
-	void LoadTiles(const char* filename);
-	void LoadTile(char type, int x, int y);
+	void LoadTiles(const char* folder);
+	void LoadTile(const char* textureFilename, char type, int x, int y);
 
 	void DeleteTiles();
 

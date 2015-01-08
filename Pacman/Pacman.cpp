@@ -82,7 +82,7 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
-	_map->Load("Maps/1.txt", _cMapWidth, _cMapHeight);
+	_map->Load("Maps/1/", _cMapWidth, _cMapHeight);
 
 	// Load Pacman
 	_pacmanTexture = new Texture2D();

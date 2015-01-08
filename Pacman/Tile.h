@@ -7,6 +7,7 @@ private:
 	bool _collidable;
 	bool _blocksSight;
 	bool _revealed;
+	bool _animated;
 
 	Texture2D* _fogOfWarTexture;
 public:
@@ -15,7 +16,7 @@ public:
 	Tile();
 	~Tile();
 
-	void Load(Texture2D* texture, Texture2D* fogOfWarTexture, int tileX, int tileY, bool collidable = false, bool blocksSight = false);
+	void Load(const char* textureFile, Texture2D* fogOfWarTexture, int tileX, int tileY, bool collidable = false, bool blocksSight = false, bool animated = false);
 
 	void Draw();
 

@@ -1,11 +1,10 @@
 #include "Map.h"
 #include <fstream>
 #include <string>
+#include <sstream>
 
 Map::Map()
 {
-	_floorTexture = new Texture2D();
-	_wallTexture = new Texture2D();
 	_fogOfWarTexture = new Texture2D();
 	_loaded = false;
 }
@@ -15,26 +14,22 @@ Map::~Map()
 {
 	DeleteTiles();
 
-	delete _floorTexture;
-	delete _wallTexture;
 	delete _fogOfWarTexture;
 }
 
 
-void Map::Load(const char* filename, int width, int height)
+void Map::Load(const char* folder, int width, int height)
 {
 	if (!_loaded)
 	{
 		_loaded = true;
 
-		_floorTexture->Load("Textures/floor.png", false);
-		_wallTexture->Load("Textures/wall.png", false);
 		_fogOfWarTexture->Load("Textures/Transparency.png", false);
 
 		_height = height;
 		_width = width;
 
-		LoadTiles(filename);
+		LoadTiles(folder);
 	}
 	else
 	{
@@ -43,12 +38,12 @@ void Map::Load(const char* filename, int width, int height)
 		_height = height;
 		_width = width;
 
-		LoadTiles(filename);
+		LoadTiles(folder);
 	}
 }
 
 
-void Map::LoadTiles(const char* filename)
+void Map::LoadTiles(const char* folder)
 {
 	_tiles = new Tile*[_height];
 	for (int iii = 0; iii < _height; iii++)
@@ -57,17 +52,24 @@ void Map::LoadTiles(const char* filename)
 	}
 
 	ifstream mapFile;
-	mapFile.open(filename);
-	string row;
+	stringstream filename;
+	filename << folder << "tiles.txt";
+	mapFile.open(filename.str().c_str());
+	char* row = new char[(_width * 2) + 1];
+
 	for (int iii = 0; iii < _height; iii++)
 	{
-		getline(mapFile, row);
+		mapFile.getline(row, (_width * 2) + 1);
 		for (int jjj = 0; jjj < _width; jjj++)
 		{
-			LoadTile(row[jjj], jjj, iii);
+			stringstream textureFilename;
+			textureFilename << folder << row[jjj * 2] << ".png";
+			LoadTile(textureFilename.str().c_str(), row[(jjj * 2) + 1], jjj, iii);
 		}
 	}
 	mapFile.close();
+
+	delete[] row;
 }
 
 
@@ -81,15 +83,33 @@ void Map::DeleteTiles()
 }
 
 
-void Map::LoadTile(char type, int X, int Y)
+void Map::LoadTile(const char* textureFilename, char type, int X, int Y)
 {
 	switch (type)
 	{
-	case 'f':
-		_tiles[Y][X].Load(_floorTexture, _fogOfWarTexture, X, Y);
+	case '0':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y);
 		break;
-	case 'w':
-		_tiles[Y][X].Load(_wallTexture, _fogOfWarTexture, X, Y, true, true);
+	case '1':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, false, false, true);
+		break;
+	case '2':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, false, true, false);
+		break;
+	case '3':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, false, true, true);
+		break;
+	case '4':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, true, false, false);
+		break;
+	case '5':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, true, false, true);
+		break;
+	case '6':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, true, true, false);
+		break;
+	case '7':
+		_tiles[Y][X].Load(textureFilename, _fogOfWarTexture, X, Y, true, true, true);
 		break;
 	}
 }
