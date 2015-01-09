@@ -97,7 +97,7 @@ void MovingEnemy::Update(int elapsedTime)
 
 			MoveTowards(_lastKnownPlayerPos);
 			
-			if (this->GetPosition().Contains(_lastKnownPlayerPos))
+			if (_posRect->Contains(_lastKnownPlayerPos))
 			{
 				_behaviour = _previousBehaviour;
 				_previousBehaviour = EnemyBehaviour::CHASE;
@@ -166,9 +166,9 @@ void MovingEnemy::MoveTowards(const Vector2& position)
 {
 	if (_currentDirectionTime > _cEnemyMinDirectionTime)
 	{
-		if (abs(_posRect->X - position.X) > abs(_posRect->Y - position.Y))
+		if (abs(_posRect->Center().X - position.X) > abs(_posRect->Center().Y - position.Y))
 		{
-			if (_posRect->X > position.X)
+			if (_posRect->Center().X > position.X)
 			{
 				_direction = 2;
 			}
@@ -179,7 +179,7 @@ void MovingEnemy::MoveTowards(const Vector2& position)
 		}
 		else
 		{
-			if (_posRect->Y > position.Y)
+			if (_posRect->Center().Y > position.Y)
 			{
 				_direction = 3;
 			}
