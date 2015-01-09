@@ -1,9 +1,12 @@
 #include "Tile.h"
 
 
-Tile::Tile()
+Tile::Tile() : _cFrameTime(500)
 {
 	_revealed = false;
+
+	_frame = 0;
+	_currentFrameTime = 0;
 }
 
 
@@ -23,6 +26,27 @@ void Tile::Load(const char* textureFile, Texture2D* fogOfWarTexture, int tileX, 
 	_collidable = collidable;
 	_blocksSight = blocksSight;
 	_animated = animated;
+}
+
+
+void Tile::Update(int elapsedTime)
+{
+	if (_animated && _draw)
+	{
+		_currentFrameTime += elapsedTime;
+
+		if (_currentFrameTime > _cFrameTime)
+		{
+			_frame++;
+
+			if (_frame >= 2)
+				_frame = 0;
+
+			_currentFrameTime = 0;
+		}
+
+		_sourceRect->X = _sourceRect->Width * _frame;
+	}
 }
 
 

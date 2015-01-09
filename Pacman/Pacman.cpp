@@ -154,6 +154,8 @@ void Pacman::Update(int elapsedTime)
 	{
 		Input(elapsedTime, *keyboardState, *mouseState);
 
+		_map->Update(elapsedTime);
+
 		_pacman->Update(elapsedTime);
 
 		UpdateMunchies(elapsedTime);

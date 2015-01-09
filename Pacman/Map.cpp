@@ -113,6 +113,24 @@ void Map::LoadTile(const char* textureFilename, char type, int X, int Y)
 }
 
 
+void Map::Update(int elpasedTime)
+{
+	UpdateTiles(elpasedTime);
+}
+
+
+void Map::UpdateTiles(int elapsedTime)
+{
+for (int iii = 0; iii < _height; iii++)
+	{
+		for (int jjj = 0; jjj < _width; jjj++)
+		{
+			_tiles[iii][jjj].Update(elapsedTime);
+		}
+	}
+}
+
+
 void Map::Draw()
 {
 	DrawTiles();

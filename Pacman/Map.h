@@ -16,13 +16,14 @@ private:
 
 	void DeleteTiles();
 
+	void UpdateTiles(int elapsedTime);
 	void DrawTiles();
 public:
 	Map();
 	~Map();
 
 	void Load(const char* filename, int width, int height);
-
+	void Update(int elapsedTime);
 	void Draw();
 
 	Tile& GetTile(int X, int Y);
