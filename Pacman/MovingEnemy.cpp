@@ -1,14 +1,16 @@
 #include "MovingEnemy.h"
 
 
-MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistance(200.0f), _map(map)
+MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistance(200.0f), _cFrameTime(250), _map(map)
 {
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
 	_currentDirectionTime = 0;
 	_speed = 0.1f;
-	_behaviour = static_cast<EnemyBehaviour>((rand() % 2) + 1);
-	//_behaviour = EnemyBehaviour::CHASE;
+	//_behaviour = static_cast<EnemyBehaviour>((rand() % 2));
+	_behaviour = EnemyBehaviour::MOVE_RANDOM;
+	_frame = 0;
+	_currentFrameTime = 0;
 }
 
 
@@ -59,8 +61,6 @@ void MovingEnemy::Update(int elapsedTime)
 
 	if (_behaviour == EnemyBehaviour::MOVE_RANDOM)
 	{
-		_sourceRect->X = 0;
-
 		if (_posRect->X + _posRect->Width >= Graphics::GetViewportWidth())
 		{
 			_direction = 2;
@@ -93,7 +93,6 @@ void MovingEnemy::Update(int elapsedTime)
 	{
 		if (!_pacman->IsDead())
 		{
-			_sourceRect->X = 40.0f;
 
 			MoveTowards(_lastKnownPlayerPos);
 			
@@ -112,7 +111,6 @@ void MovingEnemy::Update(int elapsedTime)
 	}
 	else if (_behaviour == EnemyBehaviour::PATROL)
 	{
-		_sourceRect->X = 20.0f;
 		if (_direction == 0)
 		{
 			if (_posRect->X + _posRect->Width >= Graphics::GetViewportWidth())
@@ -159,6 +157,21 @@ void MovingEnemy::Update(int elapsedTime)
 	}
 
 	_sourceRect->Y = _sourceRect->Height * _direction;
+
+
+	_currentFrameTime += elapsedTime;
+
+	if (_currentFrameTime > _cFrameTime)
+	{
+		_frame++;
+
+		if (_frame >= 2)
+			_frame = 0;
+
+		_currentFrameTime = 0;
+	}
+
+	_sourceRect->X = _sourceRect->Width * _behaviour * 2 + (_sourceRect->Width * _frame);
 }
 
 

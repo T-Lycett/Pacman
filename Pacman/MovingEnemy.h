@@ -5,8 +5,8 @@
 enum EnemyBehaviour
 {
 	MOVE_RANDOM,
-	CHASE,
 	PATROL,
+	CHASE,
 };
 
 class MovingEnemy : public GameObject
@@ -21,6 +21,10 @@ private:
 
 	const int _cEnemyMinDirectionTime;
 	const float _cSightDistance;
+
+	int _frame;
+	int _currentFrameTime;
+	const int _cFrameTime;
 
 	Player* _pacman;
 	Map& _map;
