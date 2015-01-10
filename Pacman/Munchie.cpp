@@ -20,8 +20,8 @@ Munchie::~Munchie()
 void Munchie::Load(Texture2D* texture)
 {
 	_texture = texture;
-	_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_posRect = new Rect(rand() % (Graphics::GetViewportWidth() - _sourceRect->Width), rand() % (Graphics::GetViewportHeight() - _sourceRect->Height), 32, 32);
+	_sourceRect = new Rect(0.0f, 0.0f, 12, 12);
+	_posRect = new Rect(rand() % (Graphics::GetViewportWidth() - _sourceRect->Width), rand() % (Graphics::GetViewportHeight() - _sourceRect->Height), 12, 12);
 
 	//load sounds
 	_pop = new SoundEffect();

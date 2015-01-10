@@ -94,7 +94,7 @@ void Pacman::LoadContent()
 
 	// Load Munchies
 	_munchieTexture = new Texture2D();
-	_munchieTexture->Load("Textures/Cherry.png", false);
+	_munchieTexture->Load("Textures/Munchie.png", false);
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
 		_munchies[iii].Load(_munchieTexture);
