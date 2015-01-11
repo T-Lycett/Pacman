@@ -83,7 +83,7 @@ void MovingEnemy::Update(int elapsedTime)
 			_direction = rand() % 4;
 		}
 
-		if (playerInSight)
+		if (playerInSight && !_pacman->IsDead())
 		{
 			_previousBehaviour = _behaviour;
 			_behaviour = EnemyBehaviour::CHASE;
@@ -139,7 +139,7 @@ void MovingEnemy::Update(int elapsedTime)
 				_direction = 2;
 			}
 		}
-		if (playerInSight)
+		if (playerInSight && !_pacman->IsDead())
 		{
 			_previousBehaviour = _behaviour;
 			_behaviour = EnemyBehaviour::CHASE;
