@@ -13,8 +13,6 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-	delete _sourceRect;
-	delete _posRect;
 }
 
 

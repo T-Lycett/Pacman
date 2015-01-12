@@ -17,8 +17,11 @@ private:
 	Circle* _boundingCircle;
 	bool _dead;
 	Rect* _lastPosRect;
+	int _boostTime;
 
 	Map& _map;
+
+	SoundEffect* _pop;
 
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
@@ -26,6 +29,7 @@ private:
 	void Input(int elapsedTime);
 	void Move(int elapsedTime);
 	void CheckCollisions();
+	void CheckTileCollisions();
 public:
 	Player(Map& map);
 	~Player();
@@ -36,5 +40,5 @@ public:
 	const Circle& GetBoundingCircle();
 	bool IsDead();
 	void Kill();
-	
+	int GetBoostRemaining() { return _boostTime; }
 };

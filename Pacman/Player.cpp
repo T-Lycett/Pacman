@@ -12,22 +12,29 @@ Player::Player(Map& map) : _cPlayerSpeed(0.1f), _cPlayerFrameTime(250), _map(map
 	_boundingCircle = nullptr;
 	_direction = -1;
 	_lastPosRect = nullptr;
+	_boostTime = 3000;
 }
 
 Player::~Player()
 {
+	delete _posRect;
+	delete _sourceRect;
 	delete _boundingCircle;
 	delete _lastPosRect;
+	delete _pop;
 }
 
 void Player::Load(Texture2D* texture)
 {
 	_texture = texture;
-	_posRect = new Rect(350.0f, 350.0f, 32, 32);
+	_posRect = new Rect(150.0f, 550.0f, 32, 32);
 	_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_boundingCircle = new Circle(_posRect->Center(), 16.0f);
 	_lastPosRect = new Rect();
 	*_lastPosRect = *_posRect;
+	_pop = new SoundEffect();
+	_pop->Load("Sounds/pop.wav");
+	_pop->SetPitch(0.5f);
 }
 
 void Player::Update(int elapsedTime)
@@ -65,6 +72,9 @@ void Player::Update(int elapsedTime)
 	_boundingCircle->Center(_posRect->Center());
 
 	CheckCollisions();
+
+	if (_boostTime < 0)
+		_boostTime = 0;
 }
 
 void Player::Input(int elapsedTime)
@@ -92,9 +102,10 @@ void Player::Input(int elapsedTime)
 		_direction = -1;
 	}
 
-	if (state->IsKeyDown(Input::Keys::LEFTSHIFT))
+	if (state->IsKeyDown(Input::Keys::LEFTSHIFT) && _boostTime > 0)
 	{
 		_speedMultiplier = 2.0f;
+		_boostTime -= elapsedTime;
 	}
 	else {
 		_speedMultiplier = 1.0f;
@@ -127,27 +138,45 @@ void Player::CheckCollisions()
 {
 	//wrap around viewport
 	if (_posRect->X > Graphics::GetViewportWidth())
+	{
 		_posRect->X = -_sourceRect->Width;
+		Audio::Play(_pop);
+	}
 
 	if (_posRect->X < -_sourceRect->Width)
+	{
 		_posRect->X = Graphics::GetViewportWidth();
+		Audio::Play(_pop);
+	}
 
 	if (_posRect->Y > Graphics::GetViewportHeight())
+	{
 		_posRect->Y = -_sourceRect->Height;
+		Audio::Play(_pop);
+	}
 
 	if (_posRect->Y < -_sourceRect->Height)
+	{
 		_posRect->Y = Graphics::GetViewportHeight();
+		Audio::Play(_pop);
+	}
 
+	CheckTileCollisions();
+}
+
+
+void Player::CheckTileCollisions()
+{
 	int x = _posRect->X / Tile::SIZE;
 	int y = _posRect->Y / Tile::SIZE;
-	for (int iii = x; iii <= (int) (x + (_posRect->Width / Tile::SIZE)); iii++)
+	for (int iii = x; iii <= (int)(x + (_posRect->Width / Tile::SIZE)); iii++)
 	{
-		for (int jjj = y; jjj <= (int) (y + (_posRect->Height / Tile::SIZE)); jjj++)
+		for (int jjj = y; jjj <= (int)(y + (_posRect->Height / Tile::SIZE)); jjj++)
 		{
 			if (_map.IsValidTile(iii, jjj))
 			{
-				Tile& tile = _map.GetTile(iii, jjj);
-				if (tile.IsCollidable() && _boundingCircle->Intersects(tile.GetBoundingRect()))
+				Tile* tile = _map.GetTile(iii, jjj);
+				if (tile->IsCollidable() && _boundingCircle->Intersects(tile->GetBoundingRect()))
 				{
 					_posRect->X = _lastPosRect->X;
 					_posRect->Y = _lastPosRect->Y;

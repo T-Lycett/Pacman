@@ -149,16 +149,21 @@ void Map::DrawTiles()
 }
 
 
-Tile& Map::GetTile(int X, int Y)
+Tile* Map::GetTile(int X, int Y)
 {
-	return _tiles[Y][X];
+	if (IsValidTile(X, Y))
+		return &_tiles[Y][X];
+	else
+		return nullptr;
 }
 
 
-Tile& Map::GetTileAtPosition(float X, float Y)
+Tile* Map::GetTileAtPosition(float X, float Y)
 {
-	if (Y < _height * Tile::SIZE && X < _width * Tile::SIZE)
-		return _tiles[(int)(Y / Tile::SIZE)][(int)(X / Tile::SIZE)];
+	int tileX = X / Tile::SIZE;
+	int tileY = Y / Tile::SIZE;
+	
+	return GetTile(tileX, tileY);
 }
 
 
@@ -199,8 +204,11 @@ bool Map::InLineOfSight(Vector2& pos1, Vector2& pos2)
 
 		while (x < x2 - (x2 % Tile::SIZE))
 		{
-			if (GetTileAtPosition(x, y).BlocksSight())
-				return false;
+			if (GetTileAtPosition(x, y) != nullptr)
+			{
+				if (GetTileAtPosition(x, y)->BlocksSight())
+					return false;
+			}
 
 			x += Tile::SIZE;
 			y = (m * x) + b;
@@ -231,8 +239,11 @@ bool Map::InLineOfSight(Vector2& pos1, Vector2& pos2)
 
 		while (y < y2 - (y2 % Tile::SIZE))
 		{
-			if (GetTileAtPosition(x, y).BlocksSight())
-				return false;
+			if (GetTileAtPosition(x, y) != nullptr)
+			{
+				if (GetTileAtPosition(x, y)->BlocksSight())
+					return false;
+			}
 
 			y += Tile::SIZE;
 			x = (m * y) + b;

@@ -3,9 +3,9 @@
 
 //Entry Point for Application
 int main(int argc, char* argv[]) {
-	int munchieCount;
-	cout << "How many munchies?" << endl;
-	cin >> munchieCount;
+	string playerName;
+	cout << "Enter your name:" << endl;
+	cin >> playerName;
 
-	Pacman* game = new Pacman(argc, argv, munchieCount);
+	Pacman* game = new Pacman(argc, argv, playerName);
 }

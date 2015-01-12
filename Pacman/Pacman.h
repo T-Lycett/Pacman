@@ -1,6 +1,6 @@
 #pragma once
 
-#define GHOSTCOUNT 1
+#define GHOSTCOUNT 3
 
 
 // If Windows and not in Debug, this will run without a console window
@@ -21,6 +21,7 @@
 #include "MovingEnemy.h"
 #include "Map.h"
 #include "Tile.h"
+#include "ScoreBoard.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -42,10 +43,16 @@ private:
 
 	Map* _map;
 	const int _cMapHeight, _cMapWidth;
+
+	const int _cMapCount;
+	int _currentMap;
 	
 	Player* _pacman;
-	Munchie* _munchies;
+	Munchie** _munchies;
 	MovingEnemy* _ghosts[GHOSTCOUNT];
+
+	ScoreBoard* _scoreBoard;
+	string _playerName;
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -53,6 +60,8 @@ private:
 	int _munchieCount;
 	int _munchiesEaten;
 	const float _cMunchieMutiplier;
+
+	int _score;
 
 	bool _fogOfWar;
 	int _fogOfWarDistance;
@@ -92,9 +101,11 @@ private:
 
 	void UpdateFogOfWar();
 
+	void LoadNextMap();
+
 public:
 	/// <summary> Constructs the Pacman class. </summary>
-	Pacman(int argc, char* argv[], int munchieCount);
+	Pacman(int argc, char* argv[], string playerName);
 
 	/// <summary> Destroys any data associated with Pacman class. </summary>
 	virtual ~Pacman();

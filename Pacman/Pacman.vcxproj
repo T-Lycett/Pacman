@@ -92,8 +92,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pacman.cpp" />
-    <ClCompile Include="PatrolRoute.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ScoreBoard.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -104,8 +104,8 @@
     <ClInclude Include="Munchie.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Pacman.h" />
-    <ClInclude Include="PatrolRoute.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ScoreBoard.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

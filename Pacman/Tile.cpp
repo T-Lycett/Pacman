@@ -13,6 +13,8 @@ Tile::Tile() : _cFrameTime(500)
 Tile::~Tile()
 {
 	delete _texture;
+	delete _posRect;
+	delete _sourceRect;
 }
 
 

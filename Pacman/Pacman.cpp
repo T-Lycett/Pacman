@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cMunchieMutiplier(1.5f), _cMapHeight(30), _cMapWidth(40)
+Pacman::Pacman(int argc, char* argv[], string playerName) : Game(argc, argv), _cPauseKey(Input::Keys::P), _cMunchieMutiplier(1.5f), _cMapHeight(30), _cMapWidth(40), _cMapCount(2)
 {
 	srand(time(nullptr));
 
@@ -12,13 +12,19 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 	_pacman = new Player(*_map);
 
+	_scoreBoard = new ScoreBoard();
+	_playerName = playerName;
+
 	_startMenu = new Menu();
 	_pauseMenu = new Menu();
 	_gameOverMenu = new Menu();
 
 	_munchiesEaten = 0;
-	_munchieCount = munchieCount;
-	_munchies = new Munchie[_munchieCount];
+	_munchieCount = 5;
+
+	_munchies = new Munchie*[_munchieCount];
+
+	_score = 0;
 
 	_fogOfWar = true;
 	_fogOfWarDistance = 300;
@@ -32,7 +38,10 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
-		_ghosts[iii] = new MovingEnemy(*_map);
+		if (iii == 0)
+			_ghosts[iii] = new MovingEnemy(*_map, EnemyBehaviour::PATROL);
+		else
+			_ghosts[iii] = new MovingEnemy(*_map, EnemyBehaviour::MOVE_RANDOM);
 	}
 
 	//Initialise important Game aspects
@@ -46,6 +55,10 @@ Pacman::Pacman(int argc, char* argv[], int munchieCount) : Game(argc, argv), _cP
 
 Pacman::~Pacman()
 {
+	for (int iii = 0; iii < _munchieCount; iii++)
+	{
+		delete _munchies[iii];
+	}
 	delete[] _munchies;
 
 	delete _munchieTexture;
@@ -53,6 +66,8 @@ Pacman::~Pacman()
 	delete _ghostTex;
 	
 	delete _pacman;
+
+	delete _scoreBoard;
 
 	delete _map;
 
@@ -82,12 +97,17 @@ Pacman::~Pacman()
 
 void Pacman::LoadContent()
 {
-	_map->Load("Maps/1/", _cMapWidth, _cMapHeight);
+	_currentMap = (rand() % _cMapCount) + 1;
+	stringstream mapFolder;
+	mapFolder << "Maps/" << _currentMap << "/";
+	_map->Load(mapFolder.str().c_str() , _cMapWidth, _cMapHeight);
 
 	// Load Pacman
 	_pacmanTexture = new Texture2D();
 	_pacmanTexture->Load("Textures/Pacman.tga", false);
 	_pacman->Load(_pacmanTexture);
+
+	_scoreBoard->Load();
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -97,7 +117,8 @@ void Pacman::LoadContent()
 	_munchieTexture->Load("Textures/Munchie.png", false);
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		_munchies[iii].Load(_munchieTexture);
+		_munchies[iii] = new Munchie(*_map);
+		_munchies[iii]->Load(_munchieTexture);
 	}
 
 	//load ghost
@@ -177,15 +198,15 @@ void Pacman::Draw(int elapsedTime)
 
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Pacman X: " << _pacman->GetPosition().X << " Y: " << _pacman->GetPosition().Y;
-	if (elapsedTime)
-		stream << endl << "FPS: " << 1000 / elapsedTime;
-
-	stream << endl << "Fog of War: ";
+	stream << "Fog of War: ";
 	if (_fogOfWar)
 		stream << "On";
 	else
 		stream << "Off";
+	stream << endl << "Boost Remaining: " << _pacman->GetBoostRemaining() / 1000 << "s";
+	stream << endl << "Munchies Left: " << _munchieCount - _munchiesEaten;
+	stream << endl << "Score: " << _score;
+	
 
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
@@ -193,8 +214,8 @@ void Pacman::Draw(int elapsedTime)
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (!_munchies[iii].IsEaten())
-			_munchies[iii].Draw();
+		if (!_munchies[iii]->IsEaten())
+			_munchies[iii]->Draw();
 	}
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
@@ -224,11 +245,7 @@ void Pacman::Draw(int elapsedTime)
 
 	if (_pacman->IsDead())
 	{
-		std::stringstream menuStream;
-		menuStream << "GAME OVER!";
-		SpriteBatch::Draw(_gameOverMenu->background, _gameOverMenu->rectangle, nullptr);
-		SpriteBatch::DrawString(menuStream.str().c_str(), _gameOverMenu->stringPosition,
-			Color::Red);
+		_scoreBoard->Draw();
 	}
 	
 	_pacman->Draw();
@@ -242,9 +259,9 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState & state, const Input::M
 	{
 		for (int iii = 0; iii < _munchieCount; iii++)
 		{
-			float x = rand() % (Graphics::GetViewportWidth() - _munchies[iii].GetBoundingRect().Width);
-			float y = rand() % (Graphics::GetViewportHeight() - _munchies[iii].GetBoundingRect().Height);
-			_munchies[iii].SetPosition(x, y);
+			float x = rand() % (Graphics::GetViewportWidth() - _munchies[iii]->GetBoundingRect().Width);
+			float y = rand() % (Graphics::GetViewportHeight() - _munchies[iii]->GetBoundingRect().Height);
+			_munchies[iii]->SetPosition(x, y);
 		}
 
 
@@ -282,21 +299,30 @@ void Pacman::UpdateMunchies(int elapsedTime)
 {
 	if (_munchieCount == _munchiesEaten)
 	{
-		delete[] _munchies;
-
-		_munchieCount = _munchieCount * _cMunchieMutiplier;
-		_munchiesEaten = 0;
-
-		_munchies = new Munchie[_munchieCount];
+		LoadNextMap();
 
 		for (int iii = 0; iii < _munchieCount; iii++)
 		{
-			_munchies[iii].Load(_munchieTexture);
+			delete _munchies[iii];
+		}
+		delete[] _munchies;
+
+		_munchieCount = _munchieCount * _cMunchieMutiplier;
+		if (_munchieCount > 30)
+			_munchieCount = 30;
+		
+		_munchiesEaten = 0;
+
+		_munchies = new Munchie*[_munchieCount];
+		for (int iii = 0; iii < _munchieCount; iii++)
+		{
+			_munchies[iii] = new Munchie(*_map);
+			_munchies[iii]->Load(_munchieTexture);
 		}
 	}
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		_munchies[iii].Update(elapsedTime);
+		_munchies[iii]->Update(elapsedTime);
 	}
 }
 
@@ -304,12 +330,13 @@ void Pacman::CheckMunchieCollisions()
 {
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (!_munchies[iii].IsEaten())
+		if (!_munchies[iii]->IsEaten())
 		{
-			if (_pacman->GetBoundingCircle().Intersects(_munchies[iii].GetBoundingRect()))
+			if (_pacman->GetBoundingCircle().Intersects(_munchies[iii]->GetBoundingRect()))
 			{
-				_munchies[iii].OnCollected();
+				_munchies[iii]->OnCollected();
 				_munchiesEaten++;
+				_score++;
 			}
 		}
 	}
@@ -328,7 +355,10 @@ void Pacman::CheckGhostCollision()
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
 	{
 		if (_pacman->GetBoundingCircle().Intersects(_ghosts[iii]->GetBoundingRect()))
+		{
 			_pacman->Kill();
+			_scoreBoard->AddScore(_playerName, _score);
+		}
 	}
 }
 
@@ -349,7 +379,7 @@ void Pacman::UpdateFogOfWar()
 	{
 		for (int iii = 0; iii < _munchieCount; iii++)
 		{
-			_munchies[iii].SetDraw(true);
+			_munchies[iii]->SetDraw(true);
 		}
 
 		for (int iii = 0; iii < GHOSTCOUNT; iii++)
@@ -361,7 +391,7 @@ void Pacman::UpdateFogOfWar()
 		{
 			for (int jjj = 0; jjj < _cMapWidth; jjj++)
 			{
-				_map->GetTile(jjj, iii).SetDraw(true);
+				_map->GetTile(jjj, iii)->SetDraw(true);
 			}
 		}
 		return;
@@ -371,10 +401,10 @@ void Pacman::UpdateFogOfWar()
 
 	for (int iii = 0; iii < _munchieCount; iii++)
 	{
-		if (Vector2::Distance(pacmanPos, _munchies[iii].GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(pacmanPos, _munchies[iii].GetPosition().Center()))
-			_munchies[iii].SetDraw(true);
+		if (Vector2::Distance(pacmanPos, _munchies[iii]->GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(pacmanPos, _munchies[iii]->GetPosition().Center()))
+			_munchies[iii]->SetDraw(true);
 		else
-			_munchies[iii].SetDraw(false);
+			_munchies[iii]->SetDraw(false);
 	}
 
 	for (int iii = 0; iii < GHOSTCOUNT; iii++)
@@ -389,16 +419,47 @@ void Pacman::UpdateFogOfWar()
 	{
 		for (int jjj = 0; jjj < _cMapHeight; jjj++)
 		{
-			Tile& tile = _map->GetTile(iii, jjj);
-			if (Vector2::Distance(pacmanPos, tile.GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(tile.GetPosition().Center(), pacmanPos))
+			Tile* tile = _map->GetTile(iii, jjj);
+			if (Vector2::Distance(pacmanPos, tile->GetPosition().Center()) < _fogOfWarDistance && _map->InLineOfSight(tile->GetPosition().Center(), pacmanPos))
 			{
-				tile.SetDraw(true);
-				tile.Reveal();
+				tile->SetDraw(true);
+				tile->Reveal();
 			}
 			else
 			{
-				tile.SetDraw(false);
+				tile->SetDraw(false);
 			}
 		}
+	}
+}
+
+
+void Pacman::LoadNextMap()
+{
+	int nextMap;
+	do
+	{
+		nextMap = (rand() % _cMapCount) + 1;
+	} while (nextMap == _currentMap && _cMapCount > 1);
+	
+	stringstream mapFolder;
+	mapFolder << "Maps/" << nextMap << "/";
+	_map->Load(mapFolder.str().c_str(), _cMapWidth, _cMapHeight);
+
+	_currentMap = nextMap;
+
+	delete _pacman;
+	_pacman = new Player(*_map);
+	_pacman->Load(_pacmanTexture);
+
+	for (int iii = 0; iii < GHOSTCOUNT; iii++)
+	{
+		delete _ghosts[iii];
+		if (iii == 0)
+			_ghosts[iii] = new MovingEnemy(*_map, EnemyBehaviour::PATROL);
+		else
+			_ghosts[iii] = new MovingEnemy(*_map, EnemyBehaviour::MOVE_RANDOM);
+
+		_ghosts[iii]->Load(_ghostTex, _pacman);
 	}
 }

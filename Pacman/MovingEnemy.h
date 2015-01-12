@@ -33,7 +33,7 @@ private:
 
 	void MoveTowards(const Vector2& position);
 public:
-	MovingEnemy(Map& map);
+	MovingEnemy(Map& map, EnemyBehaviour behaviour);
 	~MovingEnemy();
 
 	void Load(Texture2D* texture, Player* pacman);

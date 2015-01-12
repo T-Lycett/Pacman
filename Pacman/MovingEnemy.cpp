@@ -1,14 +1,13 @@
 #include "MovingEnemy.h"
 
 
-MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistance(200.0f), _cFrameTime(250), _map(map)
+MovingEnemy::MovingEnemy(Map& map, EnemyBehaviour behaviour) : _cEnemyMinDirectionTime(100), _cSightDistance(200.0f), _cFrameTime(250), _map(map)
 {
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
 	_currentDirectionTime = 0;
-	_speed = 0.1f;
-	//_behaviour = static_cast<EnemyBehaviour>((rand() % 2));
-	_behaviour = EnemyBehaviour::MOVE_RANDOM;
+	_speed = 0.13f;
+	_behaviour = behaviour;
 	_frame = 0;
 	_currentFrameTime = 0;
 }
@@ -16,22 +15,27 @@ MovingEnemy::MovingEnemy(Map& map) : _cEnemyMinDirectionTime(100), _cSightDistan
 
 MovingEnemy::~MovingEnemy()
 {
+	delete _posRect;
+	delete _sourceRect;
 }
 
 
 void MovingEnemy::Load(Texture2D* texture, Player* pacman)
 {
 	_texture = texture;
-	_posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
-	_sourceRect = new Rect(0.0f, 0.0f, 20, 20);
 	_pacman = pacman;
+	do
+	{
+		_posRect = new Rect(rand() % Graphics::GetViewportWidth(), rand() % Graphics::GetViewportHeight(), 20, 20);
+	} while (Vector2::Distance(_posRect->Center(), _pacman->GetPosition().Center()) < _cSightDistance);
+	_sourceRect = new Rect(0.0f, 0.0f, 20, 20);
 	_lastKnownPlayerPos = _pacman->GetPosition().Center();
 }
 
 
 void MovingEnemy::Update(int elapsedTime)
 {
-	int startDirection = _direction;
+	int currentDirection = _direction;
 
 	if (_direction == 0)
 	{
@@ -61,6 +65,11 @@ void MovingEnemy::Update(int elapsedTime)
 
 	if (_behaviour == EnemyBehaviour::MOVE_RANDOM)
 	{
+		if (_currentDirectionTime >= _directionTime)
+		{
+			_direction = rand() % 4;
+		}
+
 		if (_posRect->X + _posRect->Width >= Graphics::GetViewportWidth())
 		{
 			_direction = 2;
@@ -77,12 +86,7 @@ void MovingEnemy::Update(int elapsedTime)
 		{
 			_direction = 1;
 		}
-
-		if (_currentDirectionTime >= _directionTime)
-		{
-			_direction = rand() % 4;
-		}
-
+		
 		if (playerInSight && !_pacman->IsDead())
 		{
 			_previousBehaviour = _behaviour;
@@ -146,7 +150,7 @@ void MovingEnemy::Update(int elapsedTime)
 		}
 	}
 
-	if (startDirection != _direction)
+	if (currentDirection != _direction)
 	{
 		_currentDirectionTime = 0;
 		_directionTime = (rand() % 1500) + 1000;

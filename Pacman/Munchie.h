@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Player.h"
+#include "Map.h"
 
 class Munchie : public GameObject
 {
@@ -12,8 +13,9 @@ private:
 
 	SoundEffect* _pop;
 
+	Map& _map;
 public:
-	Munchie();
+	Munchie(Map& map);
 	~Munchie();
 
 	void Load(Texture2D* texture);

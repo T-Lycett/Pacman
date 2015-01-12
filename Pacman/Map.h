@@ -26,8 +26,8 @@ public:
 	void Update(int elapsedTime);
 	void Draw();
 
-	Tile& GetTile(int X, int Y);
-	Tile& GetTileAtPosition(float X, float Y);
+	Tile* GetTile(int X, int Y);
+	Tile* GetTileAtPosition(float X, float Y);
 	bool IsValidTile(int X, int Y);
 
 	bool InLineOfSight(Vector2& pos1, Vector2& pos2);

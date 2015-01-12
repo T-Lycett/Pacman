@@ -1,7 +1,7 @@
 #include "Munchie.h"
 
 
-Munchie::Munchie() : _cMunchieFrameTime(500)
+Munchie::Munchie(Map& map) : _cMunchieFrameTime(500), _map(map)
 {
 	
 	_frameCount = rand() % 1;
@@ -13,6 +13,8 @@ Munchie::Munchie() : _cMunchieFrameTime(500)
 
 Munchie::~Munchie()
 {
+	delete _sourceRect;
+	delete _posRect;
 	delete _pop;
 }
 
@@ -21,7 +23,13 @@ void Munchie::Load(Texture2D* texture)
 {
 	_texture = texture;
 	_sourceRect = new Rect(0.0f, 0.0f, 12, 12);
-	_posRect = new Rect(rand() % (Graphics::GetViewportWidth() - _sourceRect->Width), rand() % (Graphics::GetViewportHeight() - _sourceRect->Height), 12, 12);
+	do
+	{
+		if (_posRect != nullptr)
+			delete _posRect;
+
+		_posRect = new Rect(rand() % (Graphics::GetViewportWidth() - _sourceRect->Width), rand() % (Graphics::GetViewportHeight() - _sourceRect->Height), 12, 12);
+	} while (_map.GetTileAtPosition(_posRect->X, _posRect->Y)->IsCollidable());
 
 	//load sounds
 	_pop = new SoundEffect();
