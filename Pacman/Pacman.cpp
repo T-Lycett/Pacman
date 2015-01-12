@@ -14,6 +14,7 @@ Pacman::Pacman(int argc, char* argv[], string playerName) : Game(argc, argv), _c
 
 	_scoreBoard = new ScoreBoard();
 	_playerName = playerName;
+	_scoreAdded = false;
 
 	_startMenu = new Menu();
 	_pauseMenu = new Menu();
@@ -188,6 +189,12 @@ void Pacman::Update(int elapsedTime)
 		CheckGhostCollision();
 
 	}
+
+	if (_pacman->IsDead() && !_scoreAdded)
+	{
+		_scoreBoard->AddScore(_playerName, _score);
+		_scoreAdded = true;
+	}
 }
 
 void Pacman::Draw(int elapsedTime)
@@ -357,7 +364,6 @@ void Pacman::CheckGhostCollision()
 		if (_pacman->GetBoundingCircle().Intersects(_ghosts[iii]->GetBoundingRect()))
 		{
 			_pacman->Kill();
-			_scoreBoard->AddScore(_playerName, _score);
 		}
 	}
 }

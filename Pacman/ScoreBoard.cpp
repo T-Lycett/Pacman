@@ -45,29 +45,30 @@ void ScoreBoard::Draw()
 
 
 	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), new Vector2(400.0f, 100.0f), Color::Green);
+	SpriteBatch::DrawString(stream.str().c_str(), new Vector2(600.0f, 200.0f), Color::Green);
 }
 
 
 void ScoreBoard::AddScore(string name, int score)
 {
-	int rank = 0;
+	int rank = 11;
 	for (int iii = 9; iii >= 0; iii--)
 	{
 		if (score > _highScores[iii]->score)
 		{
-			for (int jjj = 8; jjj >= iii; jjj--)
-			{
-				_highScores[jjj + 1]->name = _highScores[jjj]->name;
-				_highScores[jjj + 1]->score = _highScores[jjj]->score;
-			}
-			rank = iii + 1;
+			
+			rank = iii;
 		}
 	}
-	if (rank != 0)
+	for (int iii = 8; iii >= rank; iii--)
 	{
-		_highScores[rank - 1]->name = name;
-		_highScores[rank - 1]->score = score;
+		_highScores[iii + 1]->name = _highScores[iii]->name;
+		_highScores[iii + 1]->score = _highScores[iii]->score;
+	}
+	if (rank < 10)
+	{
+		_highScores[rank]->name = name;
+		_highScores[rank]->score = score;
 	}
 
 	ofstream highScoresFile;

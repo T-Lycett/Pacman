@@ -53,6 +53,7 @@ private:
 
 	ScoreBoard* _scoreBoard;
 	string _playerName;
+	bool _scoreAdded;
 
 	// Position for String
 	Vector2* _stringPosition;
