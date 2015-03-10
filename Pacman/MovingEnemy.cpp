@@ -6,7 +6,7 @@ MovingEnemy::MovingEnemy(Map& map, EnemyBehaviour behaviour) : _cEnemyMinDirecti
 	_direction = 0;
 	_directionTime = (rand() % 1500) + 1000;
 	_currentDirectionTime = 0;
-	_speed = 0.13f;
+	_speed = 0.11f;
 	_behaviour = behaviour;
 	_frame = 0;
 	_currentFrameTime = 0;
